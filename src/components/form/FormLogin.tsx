@@ -1,8 +1,10 @@
-import type { FC } from 'react'
+import { type FC, useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
-import { ErrorForm } from '@/components/form'
+import { ErrorCredentials, ErrorForm } from '@/components/form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
+import { signIn } from 'next-auth/react'
+import { useRouter } from 'next/router'
 
 interface FormData {
   username: string
@@ -15,6 +17,9 @@ const schema = yup.object({
 }).required()
 
 export const FormLogin: FC = () => {
+  const router = useRouter()
+  const [showError, setShowError] = useState(false)
+  const [errorMessage, setErrorMessage] = useState<string>('')
   const {
     register,
     handleSubmit,
@@ -23,9 +28,20 @@ export const FormLogin: FC = () => {
     resolver: yupResolver(schema)
   })
 
-  const onSubmit = handleSubmit((data) => {
-    console.log(data)
+  const onSubmit = handleSubmit(async (formValues) => {
+    const { username, password } = formValues
+    setShowError(false)
+
+    await signIn('credentials', { username, password })
   })
+
+  useEffect(() => {
+    const { error } = router.query as { error: string }
+    if (error !== undefined) {
+      setShowError(true)
+      setErrorMessage('Correo o contraseña incorrectos')
+    }
+  }, [router.query])
 
   return (
     <form className="w-full" onSubmit={onSubmit}>
@@ -60,6 +76,7 @@ export const FormLogin: FC = () => {
           <ErrorForm message={errors.password?.message as string} />
         )}
       </div>
+          <ErrorCredentials showError={showError} message={errorMessage}/>
       <button
         type="submit"
         className="w-full rounded-lg bg-neutral-900 font-semibold py-[6px] text-white text-lg hover:bg-neutral-700 transition-colors "

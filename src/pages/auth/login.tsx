@@ -1,6 +1,8 @@
+import { type GetServerSideProps } from 'next'
 import { FormLogin } from '@/components/form'
 import Head from 'next/head'
 import type { FC } from 'react'
+import { getSession } from 'next-auth/react'
 
 const Login: FC = () => {
   return (
@@ -21,6 +23,24 @@ const Login: FC = () => {
       </section>
     </>
   )
+}
+
+export const getServerSideProps: GetServerSideProps = async ({ req, query }) => {
+  const session = await getSession({ req })
+  const { p = '/' } = query
+
+  if (session !== null) {
+    return {
+      redirect: {
+        destination: p.toString(),
+        permanent: false
+      }
+    }
+  }
+
+  return {
+    props: {}
+  }
 }
 
 export default Login

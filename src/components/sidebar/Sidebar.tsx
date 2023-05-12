@@ -4,7 +4,7 @@ import { MenuList } from './MenuList'
 
 export const Sidebar: FC = () => {
   return (
-    <header className='basis-[300px] bg-neutral-800 py-4 flex-shrink-0'>
+    <header className='basis-[280px] bg-neutral-800 py-4 flex-shrink-0'>
       <MenuList />
     </header>
   )
