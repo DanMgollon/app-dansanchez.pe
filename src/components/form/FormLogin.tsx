@@ -51,7 +51,7 @@ export const FormLogin: FC = () => {
         </label>
         <input
           type="text"
-          className="w-full bg-gray-50 border border-gray-300 rounded-md py-[7px] px-4 outline-none"
+          className="w-full bg-gray-50 border border-gray-300 rounded-[10px] py-[7px] px-4 outline-none"
           placeholder="ferreteria"
           {...register('username')}
           autoComplete="off"
@@ -67,7 +67,7 @@ export const FormLogin: FC = () => {
         </label>
         <input
           type="password"
-          className="w-full bg-gray-50 border border-gray-300 rounded-md py-[7px] px-4 outline-none"
+          className="w-full bg-gray-50 border border-gray-300 rounded-[10px] py-[7px] px-4 outline-none"
           placeholder="*******"
           {...register('password')}
           autoComplete="off"
@@ -79,7 +79,7 @@ export const FormLogin: FC = () => {
           <ErrorCredentials showError={showError} message={errorMessage}/>
       <button
         type="submit"
-        className="w-full rounded-lg bg-neutral-900 font-semibold py-[6px] text-white text-lg hover:bg-neutral-700 transition-colors "
+        className="w-full rounded-[10px] bg-neutral-900 font-semibold py-[7px] text-white hover:bg-neutral-700 transition-colors "
       >
         INGRESAR
       </button>
