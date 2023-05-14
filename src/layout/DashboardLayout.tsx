@@ -22,7 +22,7 @@ export const DashboardLayout: FC<Props> = ({ title, children }) => {
           <Sidebar />
           <section className="w-full h-full grow">
             <Navbar />
-            <main className="p-2">{children}</main>
+              <main className='w-full h-full' style={{ padding: '10px' }}>{children}</main>
           </section>
         </div>
       </section>
