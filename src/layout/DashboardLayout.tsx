@@ -18,11 +18,11 @@ export const DashboardLayout: FC<Props> = ({ title, children }) => {
         <title>{title ?? DEFAULT_TITLE}</title>
       </Head>
       <section>
-        <div className="flex w-full min-h-screen">
+        <div className="flex w-full min-h-screen items-start">
           <Sidebar />
-          <section className="w-full h-full grow">
+          <section className="w-full min-screen">
             <Navbar />
-              <main className='w-full h-full' style={{ padding: '10px' }}>{children}</main>
+              <main className='w-full h-full p-2 overflow-y-auto'>{children}</main>
           </section>
         </div>
       </section>

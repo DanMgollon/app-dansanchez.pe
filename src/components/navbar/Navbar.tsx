@@ -14,7 +14,7 @@ export const Navbar: FC = () => {
   return (
     <header className="bg-white shadow-sm py-3 px-4">
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-bold">Ferretería JR</h1>
+        <h1 className="text-xl font-bold text-gray-500">Ferretería JR</h1>
 
         <button
           className="flex items-center gap-2 rounded-lg py-1 px-4 border border-red-500 text-red-500 hover:bg-red-200
