@@ -1,0 +1,68 @@
+import type { Area } from '@/interfaces'
+import { useAreasStore, useUIStore } from '@/store'
+import { ToastDelete } from '@/ui'
+import type { FC } from 'react'
+import { toast } from 'react-hot-toast'
+
+interface Props {
+  area: Area
+}
+
+export const AreaListItem: FC<Props> = ({ area }) => {
+  const {
+    id,
+    name,
+    status: { active }
+  } = area
+  const setActiveArea = useUIStore((state) => state.setActiveArea)
+  const deleteArea = useAreasStore(state => state.deleteArea)
+
+  const handleEdit = (): void => {
+    setActiveArea(area)
+  }
+  const onDelete = (): void => {
+    deleteArea(id)
+  }
+
+  const handleDelete = (): void => {
+    toast.custom((t) => (
+      <ToastDelete t={t} onDelete={onDelete}>
+        <p>Estas seguro que deseas eliminar la area <b>{name}</b></p>
+      </ToastDelete>
+    ))
+  }
+
+  return (
+    <tr className="bg-white border-b hover:bg-gray-50">
+      <th
+        scope="row"
+        className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap"
+      >
+        {name}
+      </th>
+      <td
+        className={`px-6 py-4 font-medium ${
+          active ? 'text-green-700' : 'text-red-700'
+        }`}
+      >
+        {active ? 'ACTIVO' : 'NO ACTIVO'}
+      </td>
+      <td className="px-6 py-4 text-right">
+        <div className="flex gap-4 justify-end">
+          <button
+            className="font-medium text-blue-600 hover:underline"
+            onClick={handleEdit}
+          >
+            Editar
+          </button>
+          <button
+            className="font-medium text-red-600 hover:underline"
+            onClick={handleDelete}
+          >
+            Eliminar
+          </button>
+        </div>
+      </td>
+    </tr>
+  )
+}
