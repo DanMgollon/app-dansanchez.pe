@@ -27,7 +27,10 @@ export const useAreasStore = create<AreasState & Actions>()(
         const areas = await getAreasService()
         set(() => ({ areas }))
       } catch (error) {
-        set(() => ({ error: 'Error al obtener las areas' }))
+        const message = (error as Error).message
+        set(() => ({ error: message }))
+        setTimeout(() => { set(() => ({ error: null })) }
+          , 50)
       } finally {
         set(() => ({ loading: false }))
       }
@@ -40,7 +43,9 @@ export const useAreasStore = create<AreasState & Actions>()(
         set(() => ({ areas }))
         setModalArea(false)
       } catch (error) {
-        set(() => ({ error: 'Error al actualizar el area' }))
+        const message = (error as Error).message
+        set(() => ({ error: message }))
+        setTimeout(() => { set(() => ({ error: null })) }, 50)
       }
     },
     createArea: async (name, active) => {
@@ -52,7 +57,9 @@ export const useAreasStore = create<AreasState & Actions>()(
         set(() => ({ areas }))
         setModalArea(false)
       } catch (error) {
-        set(() => ({ error: 'Error al crear el area' }))
+        const message = (error as Error).message
+        set(() => ({ error: message }))
+        setTimeout(() => { set(() => ({ error: null })) }, 50)
       }
     },
     deleteArea: async (id) => {
@@ -62,7 +69,10 @@ export const useAreasStore = create<AreasState & Actions>()(
         const newAreas = areasStatate.filter(area => area.id !== id)
         set(() => ({ areas: newAreas }))
       } catch (error) {
-        set(() => ({ error: 'Error al eliminar el area' }))
+        const message = (error as Error).message
+        set(() => ({ error: message }))
+
+        setTimeout(() => { set(() => ({ error: null })) }, 50)
       }
     }
   }))

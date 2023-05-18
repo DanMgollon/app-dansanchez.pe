@@ -67,6 +67,14 @@ const deleteArea = async (
       .json({ message: `No existe una area con ese id ${idAsNumber}` })
     return
   }
+  const containsProducs = await prisma.products.findMany({
+    where: { areas: { id: idAsNumber } }
+  })
+
+  if (containsProducs.length > 0) {
+    res.status(400).json({ message: 'No se puede eliminar esta area porque contiene productos' })
+    return
+  }
 
   try {
     const areaDeleted = await prisma.areas.delete({

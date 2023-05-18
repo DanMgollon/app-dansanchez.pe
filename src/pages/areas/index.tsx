@@ -3,16 +3,24 @@ import { DashboardLayout } from '@/layout'
 import { useAreasStore } from '@/store'
 import { useUIStore } from '@/store/useUIStore'
 import { AreaModal } from '@/ui'
-import type { FC } from 'react'
+import { type FC, useEffect } from 'react'
+import { toast } from 'react-hot-toast'
 import { AiOutlineAppstoreAdd } from 'react-icons/ai'
 
 const AreasPage: FC = () => {
   const areas = useAreasStore((state) => state.areas)
+  const error = useAreasStore((state) => state.error)
   const setModalArea = useUIStore((state) => state.setModalArea)
 
   const handleNewArea = (): void => {
     setModalArea(true)
   }
+
+  useEffect(() => {
+    if (error !== null) {
+      toast.error(error, { position: 'bottom-right' })
+    }
+  }, [error])
 
   return (
     <DashboardLayout title="Areas">
