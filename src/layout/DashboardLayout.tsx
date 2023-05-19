@@ -1,4 +1,3 @@
-import { Navbar } from '@/components/navbar/'
 import { Sidebar } from '@/components/sidebar'
 import Head from 'next/head'
 import React from 'react'
@@ -21,8 +20,7 @@ export const DashboardLayout: FC<Props> = ({ title, children }) => {
         <div className="flex w-full min-h-screen items-start">
           <Sidebar />
           <section className="w-full min-screen">
-            <Navbar />
-              <main className='w-full h-full p-2 overflow-y-auto'>{children}</main>
+              <main className='pt-5 w-[95%] mx-auto overflow-y-auto'>{children}</main>
           </section>
         </div>
       </section>
