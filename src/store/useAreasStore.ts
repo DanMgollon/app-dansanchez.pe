@@ -1,13 +1,19 @@
 import type { Area } from '@/interfaces'
-import { createAreaService, deleteAreaService, getAreasService, updateAreaService } from '@/services'
+import {
+  createAreaService,
+  deleteAreaService,
+  getAreasService,
+  updateAreaService
+} from '@/services'
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
-import { useUIStore } from '@/store'
 
 interface AreasState {
   loading: boolean
   areas: Area[]
   error: string | null
+  isAdded: boolean
+  isUpdated: boolean
 }
 
 interface Actions {
@@ -22,6 +28,8 @@ export const useAreasStore = create<AreasState & Actions>()(
     areas: [],
     loading: true,
     error: null,
+    isAdded: false,
+    isUpdated: false,
     loadAreas: async () => {
       try {
         const areas = await getAreasService()
@@ -29,50 +37,59 @@ export const useAreasStore = create<AreasState & Actions>()(
       } catch (error) {
         const message = (error as Error).message
         set(() => ({ error: message }))
-        setTimeout(() => { set(() => ({ error: null })) }
-          , 50)
+        setTimeout(() => {
+          set(() => ({ error: null }))
+        }, 50)
       } finally {
         set(() => ({ loading: false }))
       }
     },
     updateArea: async (newArea) => {
-      const { setModalArea } = useUIStore.getState()
       try {
         await updateAreaService(newArea)
-        const areas = get().areas.map(area => area.id === newArea.id ? newArea : area)
+        const areas = get().areas.map((area) =>
+          area.id === newArea.id ? newArea : area
+        )
         set(() => ({ areas }))
-        setModalArea(false)
+        set(() => ({ isUpdated: true }))
+        setTimeout(() => { set(() => ({ isUpdated: false })) }, 50)
       } catch (error) {
         const message = (error as Error).message
         set(() => ({ error: message }))
-        setTimeout(() => { set(() => ({ error: null })) }, 50)
+        setTimeout(() => {
+          set(() => ({ error: null }))
+        }, 50)
       }
     },
     createArea: async (name, active) => {
-      const { setModalArea } = useUIStore.getState()
       try {
         const area = await createAreaService(name, active)
         const areas = structuredClone(get().areas)
         areas.push(area)
         set(() => ({ areas }))
-        setModalArea(false)
+        set(() => ({ isAdded: true }))
+        setTimeout(() => { set(() => ({ isAdded: false })) }, 50)
       } catch (error) {
         const message = (error as Error).message
         set(() => ({ error: message }))
-        setTimeout(() => { set(() => ({ error: null })) }, 50)
+        setTimeout(() => {
+          set(() => ({ error: null }))
+        }, 50)
       }
     },
     deleteArea: async (id) => {
       try {
         await deleteAreaService(id)
         const areasStatate = get().areas
-        const newAreas = areasStatate.filter(area => area.id !== id)
+        const newAreas = areasStatate.filter((area) => area.id !== id)
         set(() => ({ areas: newAreas }))
       } catch (error) {
         const message = (error as Error).message
         set(() => ({ error: message }))
 
-        setTimeout(() => { set(() => ({ error: null })) }, 50)
+        setTimeout(() => {
+          set(() => ({ error: null }))
+        }, 50)
       }
     }
   }))

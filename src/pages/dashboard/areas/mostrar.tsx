@@ -1,20 +1,13 @@
-import { AreasList } from '@/components/areas/AreasList'
+import { AreasList } from '@/components/areas'
 import { DashboardLayout } from '@/layout'
 import { useAreasStore } from '@/store'
-import { useUIStore } from '@/store/useUIStore'
 import { AreaModal } from '@/ui'
 import { type FC, useEffect } from 'react'
 import { toast } from 'react-hot-toast'
-import { AiOutlineAppstoreAdd } from 'react-icons/ai'
 
 const AreasPage: FC = () => {
   const areas = useAreasStore((state) => state.areas)
   const error = useAreasStore((state) => state.error)
-  const setModalArea = useUIStore((state) => state.setModalArea)
-
-  const handleNewArea = (): void => {
-    setModalArea(true)
-  }
 
   useEffect(() => {
     if (error !== null) {
@@ -25,14 +18,8 @@ const AreasPage: FC = () => {
   return (
     <DashboardLayout title="Areas">
       <section className="pb-4">
-        <div className="mb-4">
-          <button
-            className="bg-blue-600 text-white py-2 px-4 rounded font-bold flex gap-2 items-center hover:bg-blue-700 transition-colors"
-            onClick={handleNewArea}
-          >
-            <AiOutlineAppstoreAdd size={20} />
-            NUEVA AREA
-          </button>
+        <div className='mb-5 text-3xl font-extrabold'>
+          <h3>Total de areas: <span className='text-blue-500'>{areas.length}</span></h3>
         </div>
         <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
           <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
