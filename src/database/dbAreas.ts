@@ -1,5 +1,5 @@
 import type { Area } from '@/interfaces'
-import { prisma } from '../../prisma'
+import { prisma } from '../../prisma/prismaClient'
 
 export const findAreaByName = async (name: string): Promise<Area | null> => {
   try {

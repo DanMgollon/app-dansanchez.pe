@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { prisma } from '../../../../prisma'
 import type { Area } from '@/interfaces'
+import { prisma } from '../../../../prisma/prismaClient'
 
 type Data =
     | { message: string }

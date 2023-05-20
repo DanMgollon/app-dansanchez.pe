@@ -1,6 +1,6 @@
-import { prisma } from '../../prisma'
 import { bcrypt } from '@/utils'
 import type { users } from '@prisma/client'
+import { prisma } from '../../prisma/prismaClient'
 
 export const checkUserPassword = async (username: string, password: string): Promise<Omit<users, 'password'> | null> => {
   try {
