@@ -50,7 +50,7 @@ export const AreaListItem: FC<Props> = ({ area }) => {
         <div className="flex gap-4 justify-end">
           <Link
             className="font-medium text-blue-600 hover:underline"
-            href={`/areas/${name}`}
+            href={`/dashboard/areas/${name}`}
           >
             Editar
           </Link>

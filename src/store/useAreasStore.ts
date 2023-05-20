@@ -9,11 +9,12 @@ import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
 
 interface AreasState {
-  loading: boolean
+  loadingAreas: boolean
   areas: Area[]
   error: string | null
   isAdded: boolean
   isUpdated: boolean
+  isLoading: boolean
 }
 
 interface Actions {
@@ -26,10 +27,11 @@ interface Actions {
 export const useAreasStore = create<AreasState & Actions>()(
   devtools((set, get) => ({
     areas: [],
-    loading: true,
+    loadingAreas: true,
     error: null,
     isAdded: false,
     isUpdated: false,
+    isLoading: false,
     loadAreas: async () => {
       try {
         const areas = await getAreasService()
@@ -41,15 +43,14 @@ export const useAreasStore = create<AreasState & Actions>()(
           set(() => ({ error: null }))
         }, 50)
       } finally {
-        set(() => ({ loading: false }))
+        set(() => ({ loadingAreas: false }))
       }
     },
     updateArea: async (newArea) => {
+      set(() => ({ isLoading: true }))
       try {
         await updateAreaService(newArea)
-        const areas = get().areas.map((area) =>
-          area.id === newArea.id ? newArea : area
-        )
+        const areas = get().areas.map((area) => area.id === newArea.id ? newArea : area)
         set(() => ({ areas }))
         set(() => ({ isUpdated: true }))
         setTimeout(() => { set(() => ({ isUpdated: false })) }, 50)
@@ -59,9 +60,12 @@ export const useAreasStore = create<AreasState & Actions>()(
         setTimeout(() => {
           set(() => ({ error: null }))
         }, 50)
+      } finally {
+        set(() => ({ isLoading: false }))
       }
     },
     createArea: async (name, active) => {
+      set(() => ({ isLoading: true }))
       try {
         const area = await createAreaService(name, active)
         const areas = structuredClone(get().areas)
@@ -75,6 +79,8 @@ export const useAreasStore = create<AreasState & Actions>()(
         setTimeout(() => {
           set(() => ({ error: null }))
         }, 50)
+      } finally {
+        set(() => ({ isLoading: false }))
       }
     },
     deleteArea: async (id) => {

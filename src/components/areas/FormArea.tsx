@@ -5,6 +5,8 @@ import { useForm } from 'react-hook-form'
 import type { FC } from 'react'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
+import { useAreasStore } from '@/store'
+import { Spinner } from '@/ui'
 
 interface Props {
   onSubmit: (data: any) => void
@@ -24,6 +26,8 @@ export const FormArea: FC<Props> = ({ area, onSubmit }) => {
     values: area ?? undefined,
     resolver: yupResolver(schema)
   })
+
+  const isLoading = useAreasStore(state => state.isLoading)
 
   return (
     <form
@@ -68,10 +72,18 @@ export const FormArea: FC<Props> = ({ area, onSubmit }) => {
       </div>
       <button
         type="submit"
-        className="mt-8 flex items-center justify-center gap-2 bg-blue-600 text-white font-bold w-full rounded-md py-2 px-3 hover:bg-blue-700 transition-colors"
+        className={`mt-8 flex items-center justify-center gap-2 bg-blue-600 text-white font-bold w-full rounded-md py-2 px-3 hover:bg-blue-700 transition-colors grayscale ${isLoading ? 'grayscale' : 'grayscale-0'}`}
       >
-        <AiOutlineSave className="text-[20px] " />
-        GUARDAR
+        {
+          isLoading
+            ? <Spinner />
+            : (
+                <>
+                  <AiOutlineSave className="text-[20px] " />
+                  GUARDAR
+                </>
+              )
+        }
       </button>
     </form>
   )
