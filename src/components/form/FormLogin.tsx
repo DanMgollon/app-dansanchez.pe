@@ -5,6 +5,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
 import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/router'
+import { Spinner } from '@/ui'
 
 interface FormData {
   username: string
@@ -20,6 +21,7 @@ export const FormLogin: FC = () => {
   const router = useRouter()
   const [showError, setShowError] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string>('')
+  const [checkUser, setCheckUser] = useState(false)
   const {
     register,
     handleSubmit,
@@ -29,6 +31,7 @@ export const FormLogin: FC = () => {
   })
 
   const onSubmit = handleSubmit(async (formValues) => {
+    setCheckUser(true)
     const { username, password } = formValues
     setShowError(false)
 
@@ -39,6 +42,7 @@ export const FormLogin: FC = () => {
     const { error } = router.query as { error: string }
     if (error !== undefined) {
       setShowError(true)
+      setCheckUser(false)
       setErrorMessage('Correo o contraseña incorrectos')
     }
   }, [router.query])
@@ -79,9 +83,13 @@ export const FormLogin: FC = () => {
           <ErrorCredentials showError={showError} message={errorMessage}/>
       <button
         type="submit"
-        className="w-full rounded-[10px] bg-neutral-900 font-semibold py-[7px] text-white hover:bg-neutral-700 transition-colors "
+        className={`w-full rounded-[10px] bg-neutral-900 font-semibold py-[7px] text-white hover:bg-neutral-700 transition-colors ${checkUser ? 'grayscale cursor-not-allowed' : ''}`}
       >
-        INGRESAR
+        {
+          checkUser
+            ? <Spinner />
+            : 'INGRESAR'
+          }
       </button>
     </form>
   )
