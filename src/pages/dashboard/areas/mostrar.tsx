@@ -1,7 +1,6 @@
 import { AreasList } from '@/components/areas'
 import { DashboardLayout } from '@/layout'
 import { useAreasStore } from '@/store'
-import { AreaModal } from '@/ui'
 import { type FC, useEffect } from 'react'
 import { toast } from 'react-hot-toast'
 
@@ -39,7 +38,6 @@ const AreasPage: FC = () => {
             <AreasList areas={areas} />
           </table>
         </div>
-        <AreaModal />
       </section>
     </DashboardLayout>
   )
