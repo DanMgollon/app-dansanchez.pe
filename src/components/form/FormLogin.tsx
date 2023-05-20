@@ -32,7 +32,7 @@ export const FormLogin: FC = () => {
     const { username, password } = formValues
     setShowError(false)
 
-    await signIn('credentials', { username, password })
+    await signIn('credentials', { username, password, callbackUrl: '/dashboard' })
   })
 
   useEffect(() => {
