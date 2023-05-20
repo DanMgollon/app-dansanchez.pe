@@ -7,15 +7,16 @@ import { RxTriangleDown } from 'react-icons/rx'
 import type { Route } from './MenuList'
 
 interface Props {
-  title: string
-  href: string
+  name: string
   Icon: IconType
+  href: string
   routes: Route[] | undefined
 }
 
-export const MenuListItem: FC<Props> = ({ title, href, Icon, routes }) => {
+export const MenuListItem: FC<Props> = ({ name: title, href, Icon, routes }) => {
   const [collapse, setCollapse] = useState(false)
   const { pathname } = useRouter()
+  const isCurrentRoute = pathname.startsWith(href)
 
   const toggleCollapse = (): void => {
     setCollapse(!collapse)
@@ -24,13 +25,13 @@ export const MenuListItem: FC<Props> = ({ title, href, Icon, routes }) => {
   return (
     <li
       key={title}
-      className={`${pathname === href ? 'bg-neutral-950' : ''} py-3 px-5`}
+      className={`${isCurrentRoute ? 'bg-neutral-950' : ''} py-3 px-5`}
     >
       <div className="flex gap-2 justify-between">
         <div>
           <div
             className={`flex items-center justify-between text-base ${
-              pathname === href ? 'text-white' : 'text-gray-400'
+              isCurrentRoute ? 'text-white' : 'text-gray-400'
             }`}
           >
             <div className="flex gap-4 text-inherit font-bold hover:text-white">

@@ -17,7 +17,7 @@ export interface Route {
 interface MenuListType {
   name: string
   Icon: IconType
-  path: string
+  href: string
   routes: Route[]
 }
 
@@ -25,63 +25,63 @@ const MENU_LIST: MenuListType[] = [
   {
     name: 'Areas',
     Icon: MdOutlineCategory,
-    path: '/areas',
+    href: '/dashboard/areas',
     routes: [
       {
         name: 'Nueva Area',
         Icon: IoAddOutline,
-        path: '/areas/nueva-area'
+        path: '/dashboard/areas/nueva-area'
       },
       {
         name: 'Ver Areas',
         Icon: BsClipboardDataFill,
-        path: '/areas/mostrar'
+        path: '/dashboard/areas/mostrar'
       }
     ]
   },
   {
     name: 'Productos',
     Icon: MdInventory,
-    path: '/productos',
+    href: '/dashboard/productos',
     routes: [
       {
         name: 'Nuevo Producto',
         Icon: IoAddOutline,
-        path: '/productos/nuevo-producto'
+        path: '/dashboard/productos/nuevo-producto'
       },
       {
         name: 'Ver Productos',
         Icon: BsClipboardDataFill,
-        path: '/productos/mostrar'
+        path: '/dashboard/productos/mostrar'
       }
     ]
   },
   {
     name: 'Ventas',
     Icon: BsCart4,
-    path: '/ventas',
+    href: '/dashboard/ventas',
     routes: [
       {
         name: 'Generar Venta',
         Icon: BiCartAdd,
-        path: '/ventas/nueva-venta'
+        path: '/dashboard/ventas/nueva-venta'
       },
       {
         name: 'Ver Ventas',
         Icon: BsClipboardDataFill,
-        path: '/ventas/mostrar'
+        path: '/dashboard/ventas/mostrar'
       }
     ]
   },
   {
     name: 'Reportes',
     Icon: TbReportAnalytics,
-    path: '/reportes',
+    href: '/dashboard/reportes',
     routes: [
       {
         name: 'Generar Reporte',
         Icon: AiOutlineFileAdd,
-        path: '/reportes/nuevo-reporte'
+        path: '/dashboard/reportes/nuevo-reporte'
       }
     ]
   }
@@ -94,10 +94,10 @@ export const MenuList: FC = () => {
         <li>
          <LinkSidebar path='/' Icon={AiOutlineHome} name='Inicio'/>
         </li>
-        {MENU_LIST.map(({ name: title, Icon, path: href, routes }, i) => (
+        {MENU_LIST.map(({ name, Icon, href, routes }, i) => (
           <MenuListItem
-            key={title}
-            title={title}
+            key={name}
+            name={name}
             Icon={Icon}
             href={href}
             routes={routes}
