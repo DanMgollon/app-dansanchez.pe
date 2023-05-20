@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { prisma } from '../../../prisma'
 import type { User } from '../../interfaces/User'
 import { bcrypt } from '@/utils'
+import { prisma } from '../../../prisma/prismaClient'
 
 type Data =
   | { message: string }
