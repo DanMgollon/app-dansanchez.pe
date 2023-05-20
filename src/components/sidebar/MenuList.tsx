@@ -1,53 +1,110 @@
 import type { FC } from 'react'
 import type { IconType } from 'react-icons'
-import { HiOutlineHome } from 'react-icons/hi'
 import { MdOutlineCategory, MdInventory } from 'react-icons/md'
-import { BsCart4 } from 'react-icons/bs'
+import { BsCart4, BsClipboardDataFill } from 'react-icons/bs'
 import { TbReportAnalytics } from 'react-icons/tb'
-import { MenuListItem } from './MenuListItem'
+import { MenuListItem, ButtonLogout } from './'
+import { BiCartAdd } from 'react-icons/bi'
+import { IoAddOutline } from 'react-icons/io5'
+import { AiOutlineFileAdd, AiOutlineHome } from 'react-icons/ai'
+import { LinkSidebar } from './LinkSidebar'
 
-interface MenuListType {
-  title: string
+export interface Route {
+  name: string
+  path: string
   Icon: IconType
-  href: string
+}
+interface MenuListType {
+  name: string
+  Icon: IconType
+  path: string
+  routes: Route[]
 }
 
 const MENU_LIST: MenuListType[] = [
   {
-    title: 'Inicio',
-    Icon: HiOutlineHome,
-    href: '/'
-  },
-  {
-    title: 'Areas',
+    name: 'Areas',
     Icon: MdOutlineCategory,
-    href: '/areas'
+    path: '/areas',
+    routes: [
+      {
+        name: 'Nueva Area',
+        Icon: IoAddOutline,
+        path: '/areas/nueva-area'
+      },
+      {
+        name: 'Ver Areas',
+        Icon: BsClipboardDataFill,
+        path: '/areas/mostrar'
+      }
+    ]
   },
   {
-    title: 'Productos',
+    name: 'Productos',
     Icon: MdInventory,
-    href: '/productos'
+    path: '/productos',
+    routes: [
+      {
+        name: 'Nuevo Producto',
+        Icon: IoAddOutline,
+        path: '/productos/nuevo-producto'
+      },
+      {
+        name: 'Ver Productos',
+        Icon: BsClipboardDataFill,
+        path: '/productos/mostrar'
+      }
+    ]
   },
   {
-    title: 'Ventas',
+    name: 'Ventas',
     Icon: BsCart4,
-    href: '/ventas'
+    path: '/ventas',
+    routes: [
+      {
+        name: 'Generar Venta',
+        Icon: BiCartAdd,
+        path: '/ventas/nueva-venta'
+      },
+      {
+        name: 'Ver Ventas',
+        Icon: BsClipboardDataFill,
+        path: '/ventas/mostrar'
+      }
+    ]
   },
   {
-    title: 'Reportes',
+    name: 'Reportes',
     Icon: TbReportAnalytics,
-    href: '/reportes'
+    path: '/reportes',
+    routes: [
+      {
+        name: 'Generar Reporte',
+        Icon: AiOutlineFileAdd,
+        path: '/reportes/nuevo-reporte'
+      }
+    ]
   }
 ]
 
 export const MenuList: FC = () => {
   return (
-    <div>
-      <ul className='flex flex-col gap-y-2'>
-        {MENU_LIST.map(({ title, Icon, href }, i) => (
-          <MenuListItem key={title} title={title} Icon={Icon} href={href}/>
+    <div className="grow">
+      <ul className="flex flex-col gap-y-2">
+        <li>
+         <LinkSidebar path='/' Icon={AiOutlineHome} name='Inicio'/>
+        </li>
+        {MENU_LIST.map(({ name: title, Icon, path: href, routes }, i) => (
+          <MenuListItem
+            key={title}
+            title={title}
+            Icon={Icon}
+            href={href}
+            routes={routes}
+          />
         ))}
       </ul>
+      <ButtonLogout />
     </div>
   )
 }

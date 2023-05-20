@@ -1,6 +1,7 @@
 import type { Area } from '@/interfaces'
-import { useAreasStore, useUIStore } from '@/store'
+import { useAreasStore } from '@/store'
 import { ToastDelete } from '@/ui'
+import Link from 'next/link'
 import type { FC } from 'react'
 import { toast } from 'react-hot-toast'
 
@@ -14,12 +15,8 @@ export const AreaListItem: FC<Props> = ({ area }) => {
     name,
     status: { active }
   } = area
-  const setActiveArea = useUIStore((state) => state.setActiveArea)
-  const deleteArea = useAreasStore(state => state.deleteArea)
+  const deleteArea = useAreasStore((state) => state.deleteArea)
 
-  const handleEdit = (): void => {
-    setActiveArea(area)
-  }
   const onDelete = (): void => {
     deleteArea(id)
   }
@@ -27,7 +24,9 @@ export const AreaListItem: FC<Props> = ({ area }) => {
   const handleDelete = (): void => {
     toast.custom((t) => (
       <ToastDelete t={t} onDelete={onDelete}>
-        <p>Estas seguro que deseas eliminar la area <b>{name}</b></p>
+        <p>
+          Estas seguro que deseas eliminar la area <b>{name}</b>
+        </p>
       </ToastDelete>
     ))
   }
@@ -49,12 +48,12 @@ export const AreaListItem: FC<Props> = ({ area }) => {
       </td>
       <td className="px-6 py-4 text-right">
         <div className="flex gap-4 justify-end">
-          <button
+          <Link
             className="font-medium text-blue-600 hover:underline"
-            onClick={handleEdit}
+            href={`/areas/${name}`}
           >
             Editar
-          </button>
+          </Link>
           <button
             className="font-medium text-red-600 hover:underline"
             onClick={handleDelete}
