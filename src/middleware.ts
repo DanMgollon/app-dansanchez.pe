@@ -6,12 +6,11 @@ export async function middleware (req: NextRequest): Promise<NextResponse> {
   const session = await getToken({ req })
 
   if (session === null) {
-    return NextResponse.redirect(new URL('/auth/login', req.url))
+    return NextResponse.redirect(new URL('/', req.url))
   }
-
   return NextResponse.next()
 }
 
 export const config = {
-  matcher: ['/', '/areas', '/productos', '/ventas', '/reportes']
+  matcher: ['/dashboard/:path*']
 }
