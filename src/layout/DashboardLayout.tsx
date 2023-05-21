@@ -19,7 +19,7 @@ export const DashboardLayout: FC<Props> = ({ title, children }) => {
       <section>
         <div className="flex w-full min-h-screen items-start">
           <Sidebar />
-          <section className="w-full min-screen">
+          <section className="w-full min-screen bg-slate-50">
               <main className='pt-5 w-[95%] mx-auto overflow-y-auto'>{children}</main>
           </section>
         </div>
