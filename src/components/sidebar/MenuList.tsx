@@ -92,7 +92,7 @@ export const MenuList: FC = () => {
     <div className="grow">
       <ul className="flex flex-col gap-y-2">
         <li>
-         <LinkSidebar path='/' Icon={AiOutlineHome} name='Inicio'/>
+         <LinkSidebar path='/dashboard' Icon={AiOutlineHome} name='Inicio'/>
         </li>
         {MENU_LIST.map(({ name, Icon, href, routes }, i) => (
           <MenuListItem

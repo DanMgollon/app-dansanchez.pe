@@ -10,12 +10,14 @@ interface Props {
 }
 export const LinkSidebar: FC<Props> = ({ name, Icon, path }) => {
   const { pathname } = useRouter()
-
   return (
-    <Link href={path} className={`px-5 flex items-center text-base gap-4 text-inherit font-bold hover:text-white ${
-      pathname === path ? 'text-white' : 'text-gray-300'
-    }`}>
-      <Icon className='text-[22px] text-inherit'/>
+    <Link
+      href={path}
+      className={`px-5 flex items-center text-base gap-4 font-bold hover:text-white ${
+        pathname === path ? 'text-white' : 'text-gray-400'
+      }`}
+    >
+      <Icon className="text-[22px] text-inherit" />
       {name}
     </Link>
   )
