@@ -1,5 +1,9 @@
 import { type Product } from '@/interfaces'
-import { getProductsService } from '@/services'
+import {
+  createProductService,
+  getProductsService,
+  updateProductService
+} from '@/services'
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
 
@@ -13,11 +17,16 @@ interface ProductsState {
   loadingProducts: boolean
   from: number
   to: number
+  isCreated: boolean
+  isUpdated: boolean
+  isLoading: boolean
 }
 
 interface Actions {
   getProducts: () => void
   changePage: (page: number) => void
+  createProduct: (product: Omit<Product, 'id'>) => void
+  updateProduct: (product: Product) => void
 }
 
 export const useProductStore = create<ProductsState & Actions>()(
@@ -31,6 +40,9 @@ export const useProductStore = create<ProductsState & Actions>()(
     loadingProducts: false,
     from: 0,
     to: 0,
+    isCreated: false,
+    isLoading: false,
+    isUpdated: false,
     getProducts: async () => {
       const { page } = get()
       set(() => ({ loadingProducts: true }))
@@ -45,8 +57,45 @@ export const useProductStore = create<ProductsState & Actions>()(
       } catch (error) {
         const message = (error as Error).message
         set(() => ({ errorMessage: message }))
+        set(() => ({ errorMessage: null }))
       } finally {
         set(() => ({ loadingProducts: false }))
+      }
+    },
+    createProduct: async (product) => {
+      set(() => ({ isLoading: true }))
+      try {
+        const productCreated = await createProductService(product)
+        set(({ products }) => ({ products: [...products, productCreated] }))
+        set(() => ({ isCreated: true }))
+        setTimeout(() => {
+          set(() => ({ isCreated: false }))
+        }, 50)
+      } catch (error) {
+        const message = (error as Error).message
+        set(() => ({ errorMessage: message }))
+        set(() => ({ errorMessage: null }))
+      } finally {
+        set(() => ({ isLoading: false }))
+      }
+    },
+    updateProduct: async (product) => {
+      set(() => ({ isLoading: true }))
+      try {
+        const products = get().products
+        await updateProductService(product)
+        const index = products.findIndex((p) => p.id === product.id)
+        products[index] = product
+        set(() => ({ isUpdated: true }))
+        setTimeout(() => {
+          set(() => ({ isUpdated: false }))
+        }, 50)
+      } catch (error) {
+        const message = (error as Error).message
+        set(() => ({ errorMessage: message }))
+        set(() => ({ errorMessage: null }))
+      } finally {
+        set(() => ({ isLoading: false }))
       }
     },
     changePage: (page) => {
