@@ -14,8 +14,8 @@ export const LinkSidebar: FC<Props> = ({ name, Icon, path }) => {
     <Link
       href={path}
       className={`px-5 flex items-center text-base gap-4 font-bold hover:text-white ${
-        pathname === path ? 'text-white' : 'text-gray-400'
-      }`}
+        pathname === path ? 'bg-neutral-900 text-white' : 'text-gray-400'
+      } py-3 px-5`}
     >
       <Icon className="text-[22px] text-inherit" />
       {name}

@@ -9,13 +9,16 @@ export const Sidebar: FC = () => {
   const user = useAuthStore(state => state.user)
 
   return (
-    <header className='basis-[280px] bg-neutral-800 pt-4 flex-shrink-0 h-screen sticky top-0 flex flex-col'>
+    <header className='basis-[280px] bg-neutral-800 pt-4 flex-shrink-0 h-screen sticky top-0 flex flex-col rounded-tr-[40px] rounded-br-[40px] overflow-hidden'>
       <Navbar />
       <MenuList />
 
-      <footer className='flex gap-2 items-center px-3 py-2 bg-neutral-950'>
+      <footer className='flex gap-2 items-start px-3 py-2 overflow-hidden rounded-tb-[25px]'>
         <FaUserCircle className='text-2xl text-white'/>
-        <h3 className='text-white font-semibold text-lg uppercase'>{user?.username}</h3>
+        <div className='-mt-1'>
+          <h3 className='text-gray-300 font-semibold text-base uppercase'>{user?.username}</h3>
+          <p className='text-gray-400 font-semibold text-xs'>{user?.email}</p>
+        </div>
       </footer>
     </header>
   )

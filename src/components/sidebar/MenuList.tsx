@@ -2,12 +2,16 @@ import type { FC } from 'react'
 import type { IconType } from 'react-icons'
 import { MdOutlineCategory, MdInventory } from 'react-icons/md'
 import { BsCart4, BsClipboardDataFill } from 'react-icons/bs'
-import { TbReportAnalytics } from 'react-icons/tb'
+import { TbReportAnalytics, TbListDetails } from 'react-icons/tb'
 import { MenuListItem, ButtonLogout } from './'
-import { BiCartAdd } from 'react-icons/bi'
 import { IoAddOutline } from 'react-icons/io5'
-import { AiOutlineFileAdd, AiOutlineHome } from 'react-icons/ai'
+import {
+  AiOutlineHome,
+  AiOutlineDatabase,
+  AiOutlineShopping
+} from 'react-icons/ai'
 import { LinkSidebar } from './LinkSidebar'
+import { HiOutlineDocumentReport } from 'react-icons/hi'
 
 export interface Route {
   name: string
@@ -51,7 +55,7 @@ const MENU_LIST: MenuListType[] = [
       },
       {
         name: 'Ver Productos',
-        Icon: BsClipboardDataFill,
+        Icon: AiOutlineDatabase,
         path: '/dashboard/productos/mostrar'
       }
     ]
@@ -62,13 +66,13 @@ const MENU_LIST: MenuListType[] = [
     href: '/dashboard/ventas',
     routes: [
       {
-        name: 'Generar Venta',
-        Icon: BiCartAdd,
+        name: 'Nueva venta',
+        Icon: AiOutlineShopping,
         path: '/dashboard/ventas/nueva-venta'
       },
       {
         name: 'Ver Ventas',
-        Icon: BsClipboardDataFill,
+        Icon: TbListDetails,
         path: '/dashboard/ventas/mostrar'
       }
     ]
@@ -80,7 +84,7 @@ const MENU_LIST: MenuListType[] = [
     routes: [
       {
         name: 'Generar Reporte',
-        Icon: AiOutlineFileAdd,
+        Icon: HiOutlineDocumentReport,
         path: '/dashboard/reportes/nuevo-reporte'
       }
     ]
@@ -89,10 +93,10 @@ const MENU_LIST: MenuListType[] = [
 
 export const MenuList: FC = () => {
   return (
-    <div className="grow">
+    <div className="grow mt-5">
       <ul className="flex flex-col gap-y-2">
         <li>
-         <LinkSidebar path='/dashboard' Icon={AiOutlineHome} name='Inicio'/>
+          <LinkSidebar path="/dashboard" Icon={AiOutlineHome} name="Inicio" />
         </li>
         {MENU_LIST.map(({ name, Icon, href, routes }, i) => (
           <MenuListItem

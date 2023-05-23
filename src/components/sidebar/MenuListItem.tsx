@@ -43,13 +43,13 @@ export const MenuListItem: FC<Props> = ({ name: title, href, Icon, routes }) => 
           </div>
         </div>
         {routes !== undefined && (
-          <button onClick={toggleCollapse}>
-            <RxTriangleDown className="text-gray-400" size={20} />
+          <button onClick={toggleCollapse} className='group'>
+            <RxTriangleDown className="text-gray-400 group-hover:text-white" size={20} />
           </button>
         )}
       </div>
       {(routes !== undefined) && collapse && (
-        <div className={`overflow-hidden mt-4 ml-10 ${
+        <div className={`overflow-hidden mt-2 ml-8 ${
           !collapse ? 'h-[0px]' : 'h-fit'
         } transition-all duration-500 ease-in-out`}>
           <ul
@@ -61,7 +61,7 @@ export const MenuListItem: FC<Props> = ({ name: title, href, Icon, routes }) => 
                 className="text-gray-400 font-semibold flex gap-3 items-center hover:text-white cursor-pointer"
                 href={path}
               >
-                <Icon size={20} className='text-white'/>
+                <Icon size={20} className='text-inherit'/>
                 {name}
               </Link>
             ))}
