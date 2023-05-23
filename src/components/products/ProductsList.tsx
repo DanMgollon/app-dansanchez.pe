@@ -8,10 +8,10 @@ interface Props {
 
 export const ProductsList: FC<Props> = ({ products }) => {
   return (
-    <tbody>
+    <>
       {products.map((product) => (
         <ProductListItem key={product.id} product={product}/>
       ))}
-    </tbody>
+    </>
   )
 }

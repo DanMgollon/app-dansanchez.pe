@@ -1,6 +1,7 @@
 import type { Product } from '@/interfaces'
 import Link from 'next/link'
 import type { FC } from 'react'
+import { TableRow, TabelCell } from '@/components/table'
 
 interface Props {
   product: Product
@@ -21,22 +22,28 @@ const ProductListItem: FC<Props> = ({ product }) => {
   const { type } = productsTypes
 
   return (
-    <tr className="bg-white border-b hover:bg-gray-50">
-      <th scope="row" className="px-6 py-4 font-medium text-gray-900">
+    <TableRow>
+      <TabelCell scope="row" className="font-medium text-gray-800">
         {name}
-      </th>
-      <td className="px-6 py-4 font-medium text-neutral-900"> S/ {price}</td>
-      <td className="px-6 py-4 font-medium text-neutral-900">{stock}</td>
-      <td className="px-6 py-4 font-medium text-neutral-900">{areaName}</td>
-      <td className="px-6 py-4 font-medium text-neutral-900">{type}</td>
-      <td
-        className={`px-6 py-4 font-medium ${
-          active ? 'text-green-700' : 'text-red-700'
-        }`}
-      >
-        {active ? 'ACTIVO' : 'NO ACTIVO'}
-      </td>
-      <td className="px-6 py-4 text-right">
+      </TabelCell>
+      <TabelCell>
+        <span className="text-gray-600">S/ {price}</span>
+      </TabelCell>
+      <TabelCell>
+        <span className="text-gray-600">{stock}</span>
+      </TabelCell>
+      <TabelCell>
+        <span className="text-gray-600">{areaName}</span>
+      </TabelCell>
+      <TabelCell>
+        <span className="text-gray-600">{type}</span>
+      </TabelCell>
+      <TabelCell>
+        <span className={`${active ? 'text-green-500' : 'text-red-500'}`}>
+          {active ? 'ACTIVO' : 'NO ACTIVO'}
+        </span>
+      </TabelCell>
+      <TabelCell className="text-right">
         <div className="flex gap-4 justify-end">
           <Link
             className="font-medium text-blue-600 hover:underline"
@@ -45,8 +52,8 @@ const ProductListItem: FC<Props> = ({ product }) => {
             Editar
           </Link>
         </div>
-      </td>
-    </tr>
+      </TabelCell>
+    </TableRow>
   )
 }
 

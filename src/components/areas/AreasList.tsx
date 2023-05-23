@@ -8,10 +8,10 @@ interface Props {
 
 export const AreasList: FC<Props> = ({ areas }) => {
   return (
-    <tbody>
+    <>
       {areas.map((area) => (
         <AreaListItem key={area.id} area={area} />
       ))}
-    </tbody>
+    </>
   )
 }

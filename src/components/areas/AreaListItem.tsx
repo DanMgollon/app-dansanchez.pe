@@ -4,6 +4,7 @@ import { ToastDelete } from '@/ui'
 import Link from 'next/link'
 import type { FC } from 'react'
 import { toast } from 'react-hot-toast'
+import { TabelCell, TableRow } from '@/components/table'
 
 interface Props {
   area: Area
@@ -32,13 +33,13 @@ export const AreaListItem: FC<Props> = ({ area }) => {
   }
 
   return (
-    <tr className="bg-white border-b hover:bg-gray-50">
-      <th
+    <TableRow>
+      <TabelCell
         scope="row"
         className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap"
       >
         {name}
-      </th>
+      </TabelCell>
       <td
         className={`px-6 py-4 font-medium ${
           active ? 'text-green-700' : 'text-red-700'
@@ -46,7 +47,7 @@ export const AreaListItem: FC<Props> = ({ area }) => {
       >
         {active ? 'ACTIVO' : 'NO ACTIVO'}
       </td>
-      <td className="px-6 py-4 text-right">
+      <TabelCell className="px-6 py-4 text-right">
         <div className="flex gap-4 justify-end">
           <Link
             className="font-medium text-blue-600 hover:underline"
@@ -61,7 +62,7 @@ export const AreaListItem: FC<Props> = ({ area }) => {
             Eliminar
           </button>
         </div>
-      </td>
-    </tr>
+      </TabelCell>
+    </TableRow>
   )
 }
