@@ -16,11 +16,11 @@ export const ButtonPrimary: FC<Props> = ({
   return (
     <button
       type={type}
-      className={`w-full bg-blue-600 text-white hover:bg-blue-700 rounded-md py-2 px-4 font-bold ${
+      className={`bg-blue-600 text-white hover:bg-blue-700 rounded-md py-2 px-4 font-bold ${
         className as string
-      } ${isLoading === true ? 'grayscale' : 'grayscale-0'}`}
+      } ${(isLoading === true || disabled === true) ? 'grayscale' : 'grayscale-0'}`}
       {...rest}
-      disabled={isLoading === true}
+      disabled={isLoading === true || disabled === true}
     >
       {isLoading === true ? <Spinner /> : children}
     </button>
