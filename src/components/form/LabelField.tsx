@@ -2,7 +2,7 @@ import type { FC } from 'react'
 
 interface Props {
   label: string
-  htmlFor: string
+  htmlFor?: string
 }
 
 export const LabelField: FC<Props> = ({ label, htmlFor }) => {

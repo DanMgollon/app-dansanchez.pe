@@ -9,7 +9,7 @@ interface Props extends SelectHTMLAttributes<HTMLSelectElement> {
   register?: UseFormRegisterReturn
 }
 
-export const Select: FC<Props> = ({ label, children, register }) => {
+export const Select: FC<Props> = ({ label, children, register, ...rest }) => {
   const id = useId()
   return (
     <>
@@ -18,6 +18,7 @@ export const Select: FC<Props> = ({ label, children, register }) => {
         id={id}
         className='w-full border bg-slate-50 border-slate-300 outline-none rounded-md py-2 px-3 text-sm focus:shadow'
         {...register}
+        {...rest}
       >
         {children}
       </select>

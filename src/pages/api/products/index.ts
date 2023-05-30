@@ -103,7 +103,6 @@ const createProduct = async (
 
     res.status(200).json(product as unknown as Product)
   } catch (error) {
-    console.log(error)
     res.status(400).json({ message: 'No se pudo crear el producto' })
   }
 }

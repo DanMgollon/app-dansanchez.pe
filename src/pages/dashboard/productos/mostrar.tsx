@@ -3,14 +3,33 @@ import type { FC } from 'react'
 import { useProductStore } from '@/store'
 import { ProductsList } from '@/components/products/ProductsList'
 import { LodingProducts, PaginateProducts } from '@/components/products'
+import { Table } from '@/components/table/Table'
+import { FilterProducts } from '@/components/products/FilterProducts'
+import { prisma } from '../../../../prisma/prismaClient'
+import type { Area } from '@/interfaces'
+import { type GetServerSideProps } from 'next'
 
-const ProductsPage: FC = () => {
+interface Props {
+  areas: Area[]
+}
+
+const ProductsPage: FC<Props> = ({ areas }) => {
   const products = useProductStore((state) => state.products)
 
   const loadingProducts = useProductStore((state) => state.loadingProducts)
   const totalProducts = useProductStore((state) => state.totalProducts)
   const from = useProductStore((state) => state.from)
   const to = useProductStore((state) => state.to)
+
+  const HEAD_ROWS = [
+    'Producto',
+    'Precio',
+    'Stock',
+    'Area',
+    'Tipo',
+    'Estado',
+    'Acciones'
+  ]
 
   return (
     <DashboardLayout>
@@ -19,6 +38,9 @@ const ProductsPage: FC = () => {
           Listando <span className="text-blue-500">Productos</span>
         </h3>
       </header>
+      <div className="mb-8">
+        <FilterProducts areas={areas}/>
+      </div>
       <div className="flex justify-between items-center mb-5 ">
         <div>
           <p className="font-medium text-zinc-500">
@@ -29,44 +51,36 @@ const ProductsPage: FC = () => {
             de <span className="text-black font-semibold">{totalProducts}</span>
           </p>
         </div>
-      <PaginateProducts />
+        <PaginateProducts />
       </div>
       <div className="relative overflow-x-auto shadow-md sm:rounded-lg mb-5">
-        <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-          <thead className="text-xs text-white uppercase bg-neutral-800">
-            <tr>
-              <th scope="col" className="px-6 py-3">
-                Producto
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Precio
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Stock
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Area
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Tipo
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Estado
-              </th>
-              <th scope="col" className="px-6 py-3">
-                <span className="sr-only">Edit</span>
-              </th>
-            </tr>
-          </thead>
-          {
-            loadingProducts
-              ? <LodingProducts />
-              : <ProductsList products={products} />
-          }
-        </table>
+        <Table heads={HEAD_ROWS}>
+          {loadingProducts
+            ? (
+            <LodingProducts />
+              )
+            : (
+            <ProductsList products={products} />
+              )}
+        </Table>
       </div>
     </DashboardLayout>
   )
 }
 
 export default ProductsPage
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const areas = await prisma.areas.findMany({
+    select: {
+      id: true,
+      name: true,
+      status: true
+    }
+  })
+  return {
+    props: {
+      areas
+    }
+  }
+}

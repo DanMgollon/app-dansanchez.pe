@@ -17,6 +17,7 @@ const ProductListItem: FC<Props> = ({ product }) => {
     products_types: productsTypes,
     price
   } = product
+
   const { name: areaName } = areas
   const { active } = status
   const { type } = productsTypes
