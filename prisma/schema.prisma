@@ -31,11 +31,6 @@ model products {
   @@index([id], map: "IX_products")
 }
 
-model products_status {
-  id     Int     @id(map: "PK_productos_estado") @default(autoincrement())
-  active Boolean @default(true, map: "DF_productos_estado_activo")
-}
-
 model products_types {
   id       Int        @id(map: "PK_productos_tipo") @default(autoincrement())
   type     String     @db.VarChar(100)
@@ -81,4 +76,14 @@ model users {
   password String    @db.VarChar(255)
   sales    sales[]
   security security?
+}
+
+model sysdiagrams {
+  name         String @db.NVarChar(128)
+  principal_id Int
+  diagram_id   Int    @id(map: "PK__sysdiagr__C2B05B61CC17E652") @default(autoincrement())
+  version      Int?
+  definition   Bytes?
+
+  @@unique([principal_id, name], map: "UK_principal_name")
 }
