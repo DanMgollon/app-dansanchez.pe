@@ -45,8 +45,3 @@ export interface SearchProduct {
   status: string
   page: number
 }
-
-export interface Customer {
-  customer: string
-  dni: string
-}
