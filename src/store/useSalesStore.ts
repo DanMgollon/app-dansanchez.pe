@@ -1,16 +1,16 @@
-import type { ProductsSalesStore, SaleRequest } from '@/interfaces'
+import type { Customer, ProductsSalesStore } from '@/interfaces'
 import { newSaleService } from '@/services'
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
 import { useAuthStore } from './useAuthStore'
-import type { Customer } from '../interfaces/Products'
+import { useUIStore } from './useUIStore'
 
 interface State {
-  customer: Customer | null
   openModal: boolean
   productsSales: ProductsSalesStore[]
-  errorAddProductSales: string | null
   successfullySale: boolean
+  PDFUrl: string | null
+  errorAddProductSales: string | null
   isLoading: boolean
   errorSale: string | null
 }
@@ -21,9 +21,9 @@ interface Actions {
   updateAmount: (id: number, newSaleAmount: number) => void
   incrementAmoutByOne: (id: number) => void
   decrementAmoutByOne: (id: number) => void
-  newSale: (customer: string, dni: string) => void
+  newSale: (customer: Customer) => void
   removeProductsSales: () => void
-  removeCustomer: () => void
+  removePDFUrl: () => void
 }
 
 export const useSalesStore = create<State & Actions>()(
@@ -31,6 +31,7 @@ export const useSalesStore = create<State & Actions>()(
     customer: null,
     openModal: false,
     productsSales: [],
+    PDFUrl: null,
     activeProductSales: null,
     errorAddProductSales: null,
     isLoading: false,
@@ -81,30 +82,21 @@ export const useSalesStore = create<State & Actions>()(
       newState[index].saleAmount -= 1
       set(() => ({ productsSales: newState }))
     },
-    newSale: async (customer, dni) => {
+    newSale: async (customer) => {
+      const products = get().productsSales
+      const setIsModalSaleOpen = useUIStore.getState().setIsModalSaleOpen
+      const user = useAuthStore.getState().user
       set(() => ({ isLoading: true }))
       try {
-        const userId = useAuthStore.getState().user!.id
-        const productsSales = get().productsSales
-        const products = productsSales.map((item) => ({
-          productId: item.id,
-          amount: item.saleAmount
-        }))
-        const sales: SaleRequest = {
+        const { PDFUrl } = await newSaleService({
+          products,
           customer,
-          dni,
-          userId,
-          products
-        }
-        await newSaleService(sales)
-        set(() => ({ customer: { customer, dni } }))
-        set(() => ({ successfullySale: true }))
-        setTimeout(() => {
-          set(() => ({ successfullySale: false }))
-        }, 50)
+          userId: user!.id
+        })
+        set(() => ({ PDFUrl, successfullySale: true }))
+        setIsModalSaleOpen(true)
       } catch (error) {
-        const message = (error as Error).message
-        set(() => ({ errorSale: message }))
+        set(() => ({ errorSale: 'Error el generar la venta' }))
         setTimeout(() => {
           set(() => ({ errorSale: null }))
         }, 50)
@@ -115,9 +107,8 @@ export const useSalesStore = create<State & Actions>()(
     removeProductsSales: () => {
       set(() => ({ productsSales: [] }))
     },
-    removeCustomer: () => {
-      set(() => ({ customer: null }))
+    removePDFUrl: () => {
+      set(() => ({ PDFUrl: null }))
     }
-
   }))
 )
