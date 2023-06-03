@@ -1,16 +1,17 @@
 import { AddNewProduct, SaleData } from '@/components/sales'
 import { Table } from '@/components/table'
 import { DashboardLayout } from '@/layout'
-import { type FC, useEffect } from 'react'
-import { type GetServerSideProps } from 'next'
-import { prisma } from '../../../../prisma/prismaClient'
-import type { Product } from '@/interfaces'
+import { useEffect } from 'react'
 import { ButtonPrimary } from '@/ui'
 import { useSalesStore } from '@/store'
 import SalesProductsList from '@/components/sales/SalesProductsList'
 import { BiCartAdd } from 'react-icons/bi'
 import { SuccessSaleModal } from '@/components/reports'
-import { useUIStore } from '@/store/useUIStore'
+import { getProductsActive } from '@/database/dbProducts'
+import { toast } from 'react-hot-toast'
+import type { FC } from 'react'
+import type { GetServerSideProps } from 'next'
+import type { Product } from '@/interfaces'
 
 const HEAD_ROWS = [
   'Producto',
@@ -29,18 +30,19 @@ interface Props {
 const GenerateSalePage: FC<Props> = ({ products }) => {
   const setOpenModal = useSalesStore((state) => state.setOpenModal)
   const productsSales = useSalesStore((state) => state.productsSales)
-  const successfullySale = useSalesStore((state) => state.successfullySale)
-  const setIsModalSaleOpen = useUIStore(state => state.setIsModalSaleOpen)
+  const erroSale = useSalesStore((state) => state.errorSale)
 
   const onAddProduct = (): void => {
     setOpenModal(true)
   }
 
   useEffect(() => {
-    if (successfullySale) {
-      setIsModalSaleOpen(true)
+    if (erroSale !== null) {
+      toast.error(erroSale, {
+        position: 'top-right'
+      })
     }
-  }, [successfullySale])
+  }, [erroSale])
 
   return (
     <DashboardLayout>
@@ -76,24 +78,10 @@ const GenerateSalePage: FC<Props> = ({ products }) => {
 export default GenerateSalePage
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const products = await prisma.products.findMany({
-    select: {
-      id: true,
-      name: true,
-      stock: true,
-      price: true,
-      products_types: {
-        select: {
-          type: true
-        }
-      }
-    }
-  })
-  const productsSerilized = JSON.parse(JSON.stringify(products))
-
+  const products = await getProductsActive()
   return {
     props: {
-      products: productsSerilized
+      products
     }
   }
 }

@@ -1,4 +1,4 @@
-import type { Product, ProductTypes } from '@/interfaces'
+import type { Product, ProductSale, ProductTypes } from '@/interfaces'
 import { prisma } from '../../prisma/prismaClient'
 
 export const getProductsTypes = async (): Promise<ProductTypes | null> => {
@@ -28,6 +28,35 @@ export const findProductById = async (id: number): Promise<Product | null> => {
       }
     })
     return product as unknown as Product
+  } catch (error) {
+    return null
+  }
+}
+
+export const getProductsActive = async (): Promise<ProductSale | null> => {
+  try {
+    const products = await prisma.products.findMany({
+      select: {
+        id: true,
+        name: true,
+        stock: true,
+        price: true,
+        products_types: {
+          select: {
+            type: true
+          }
+        }
+      },
+      where: {
+        status: {
+          active: true
+        }
+      }
+    })
+    const productsSerilized = JSON.parse(
+      JSON.stringify(products)
+    ) as ProductSale
+    return productsSerilized
   } catch (error) {
     return null
   }
