@@ -104,7 +104,7 @@ export const AddNewProduct: FC<Props> = ({ products }) => {
           <InputField
             label="Tipo"
             type="text"
-            disabled={true}
+            disabled
             defaultValue={productSelected?.products_types.type}
           />
         </div>
@@ -122,6 +122,7 @@ export const AddNewProduct: FC<Props> = ({ products }) => {
             type="number"
             disabled={true}
             value={currentStock}
+            onChange={undefined}
           />
         </div>
         <div className="mb-3">
