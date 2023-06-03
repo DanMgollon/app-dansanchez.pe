@@ -1,11 +1,13 @@
 import { newSalesSchema } from '@/validations'
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { prisma } from '../../../../prisma/prismaClient'
 import type * as yup from 'yup'
+import { prisma } from '../../../../prisma/prismaClient'
+import { generateNewSalePDF } from '@/components/reports'
+import { uploadPFD } from '@/utils'
 
-interface Data {
-  message: string
-}
+type Data =
+  | { message: string }
+  | { PDFUrl: string }
 
 export default async function handler (
   req: NextApiRequest,
@@ -29,39 +31,55 @@ const newSale = async (
   const isValid = newSalesSchema.isValidSync(req.body)
   if (!isValid) {
     res.status(400).json({
-      message: 'Data no válida y/o faltan propiedades'
+      message: 'Faltan datos y/o no son válidos'
     })
     return
   }
-
   try {
-    const { userId, customer, dni, products } = req.body as yup.InferType<
+    const { products, customer, userId } = req.body as yup.InferType<
       typeof newSalesSchema
     >
-
-    const sale = await prisma.sales.create({
+    const { id, date } = await prisma.sales.create({
       data: {
-        dni,
-        customer,
+        customer: customer.customer,
+        dni: customer.dni,
         users_id: userId
       }
     })
 
-    products?.forEach(async (item) => {
+    products.forEach(async (product) => {
       await prisma.sales_details.create({
         data: {
-          producto_id: item.productId,
-          sales_id: sale.id,
-          quantity: item.amount
+          producto_id: product.id,
+          sales_id: id,
+          quantity: product.saleAmount
         }
       })
     })
+    const PDFAsBuffer = await generateNewSalePDF({
+      products,
+      customer,
+      date: new Date(date as Date).toLocaleString()
+    })
 
-    res.status(200).json({
-      message: 'Venta creada con éxito'
+    const chunks: any[] = []
+    PDFAsBuffer.on('data', (chunk) => {
+      chunks.push(chunk)
+    })
+
+    PDFAsBuffer.on('end', async () => {
+      const pdfBuffer = Buffer.concat(chunks as any)
+      const url = await uploadPFD(pdfBuffer)
+      await prisma.pdfs_url.create({
+        data: {
+          url,
+          sales_id: id
+        }
+      })
+
+      res.status(200).json({ PDFUrl: url })
     })
   } catch (error) {
-    console.log(error)
     res.status(500).json({
       message: 'Error al crear la venta'
     })

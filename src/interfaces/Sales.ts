@@ -1,16 +1,25 @@
+import type { ProductsSalesStore } from './Products'
 
-interface ProductsSalesRequest {
-  productId: number
-  amount: number
-}
-
-export interface SaleRequest {
+export interface Customer {
   customer: string
   dni: string
-  userId: number
-  products: ProductsSalesRequest[]
 }
 
-export interface SaleResponseSuccessFully {
+export interface NewSalePDFData {
+  products: ProductsSalesStore[]
+  customer: Customer
+  date: string
+}
+export interface NewSaleRequest {
+  products: ProductsSalesStore[]
+  customer: Customer
+  userId: number
+}
+
+export interface SalesResponseSuccess {
+  PDFUrl: string
+}
+
+export interface SalesErrorResponse {
   message: string
 }

@@ -1,11 +1,14 @@
 import { ferreteriaApi } from '@/api'
-import type { SaleResponseSuccessFully, SaleRequest } from '@/interfaces/Sales'
+import type { SalesResponseSuccess, NewSaleRequest, SalesErrorResponse } from '@/interfaces'
+import type { AxiosError } from 'axios'
 
-export const newSaleService = async (sale: SaleRequest): Promise<any> => {
+export const newSaleService = async (newSaleData: NewSaleRequest): Promise<SalesResponseSuccess> => {
   try {
-    const data = await ferreteriaApi.post<SaleResponseSuccessFully>('/sales', sale)
+    const { data } = await ferreteriaApi.post<SalesResponseSuccess>('/sales', newSaleData)
     return data
   } catch (error) {
-    console.log(error)
+    const { response } = error as AxiosError<SalesErrorResponse>
+    const errorMessage = response?.data.message
+    throw new Error(errorMessage)
   }
 }

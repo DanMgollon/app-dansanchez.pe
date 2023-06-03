@@ -1,7 +1,12 @@
-import { type ProductsSalesStore } from '@/interfaces'
-import { useSalesStore } from '@/store'
-import { Document, Page, StyleSheet, Text, View } from '@react-pdf/renderer'
-import type { FC } from 'react'
+import type { NewSalePDFData } from '@/interfaces'
+import {
+  Document,
+  Page,
+  StyleSheet,
+  Text,
+  View,
+  renderToStream
+} from '@react-pdf/renderer'
 
 const styles = StyleSheet.create({
   page: {
@@ -80,35 +85,23 @@ const styles = StyleSheet.create({
   }
 })
 
-interface Props {
-  productSales: ProductsSalesStore[]
-}
-
-export const SalePDF: FC<Props> = ({ productSales }) => {
+const SalePDF = ({ products, customer, date }: NewSalePDFData): JSX.Element => {
   const formatter = new Intl.NumberFormat('es-PE', {
     style: 'currency',
     currency: 'PEN'
   })
 
   const productsName =
-    productSales?.map(
+    products.map(
       (product) => `${product.name} ${product.saleAmount} UNIDADES`
     ) ?? []
-  const productsPrice = productSales?.map((product) => product.price) ?? []
-  const productsTotalPrice =
-    productSales?.map((product) =>
-      formatter.format(product.price * product.saleAmount)
-    ) ?? []
-  const total = formatter.format(
-    productSales?.reduce((acu, curr) => acu + curr.price * curr.saleAmount, 0)
+  const productsPrice = products.map((product) => product.price) ?? []
+  const productsTotalPrice = products.map((product) =>
+    formatter.format(product.price * product.saleAmount)
   )
-  const customer = useSalesStore.getState().customer
-  const dateString = new Date().toLocaleDateString('es-PE', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-  })
-
+  const total = formatter.format(
+    products?.reduce((acu, curr) => acu + curr.price * curr.saleAmount, 0)
+  )
   return (
     <Document>
       <Page size="A4" style={styles.page}>
@@ -134,15 +127,15 @@ export const SalePDF: FC<Props> = ({ productSales }) => {
           <View style={styles.salesDataWrapper}>
             <View style={styles.salesDataRow}>
               <Text style={styles.salesDataRowColumn}>CLIENTE: </Text>
-              <Text style={styles.salesDataRowValue}>{customer?.customer}</Text>
+              <Text style={styles.salesDataRowValue}>{customer.customer}</Text>
             </View>
             <View style={styles.salesDataRow}>
               <Text style={styles.salesDataRowColumn}>DNI: </Text>
-              <Text style={styles.salesDataRowValue}>{customer?.dni}</Text>
+              <Text style={styles.salesDataRowValue}>{customer.dni}</Text>
             </View>
             <View style={styles.salesDataRow}>
               <Text style={styles.salesDataRowColumn}>FECHA: </Text>
-              <Text style={styles.salesDataRowValue}>{dateString}</Text>
+              <Text style={styles.salesDataRowValue}>{date}</Text>
             </View>
             <View style={styles.salesDataRow}>
               <Text style={styles.salesDataRowColumn}>MONEDA: </Text>
@@ -181,5 +174,17 @@ export const SalePDF: FC<Props> = ({ productSales }) => {
         </View>
       </Page>
     </Document>
+  )
+}
+
+export const generateNewSalePDF = async (
+  data: NewSalePDFData
+): Promise<NodeJS.ReadableStream> => {
+  return await renderToStream(
+    <SalePDF
+      customer={data.customer}
+      products={data.products}
+      date={data.date}
+    />
   )
 }
