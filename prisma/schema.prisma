@@ -43,6 +43,7 @@ model sales {
   users_id      Int
   customer      String?         @default("CLIENTE", map: "DF_ventas_cliente") @db.VarChar(200)
   dni           String?         @default("0", map: "DF_ventas_dni") @db.Char(8)
+  pdfs_url      pdfs_url?
   users         users           @relation(fields: [users_id], references: [id], onDelete: Cascade, map: "FK_ventas_usuarios")
   sales_details sales_details[]
 }
@@ -86,4 +87,10 @@ model sysdiagrams {
   definition   Bytes?
 
   @@unique([principal_id, name], map: "UK_principal_name")
+}
+
+model pdfs_url {
+  url      String @db.VarChar(255)
+  sales_id Int    @id(map: "PK_pdfs_url")
+  sales    sales  @relation(fields: [sales_id], references: [id], onUpdate: NoAction, map: "FK_pdfs_url_sales")
 }
