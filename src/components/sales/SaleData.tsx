@@ -6,6 +6,7 @@ import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { salesRegisterCustomerSchema } from '@/validations'
 import { useSalesStore } from '@/store'
+import { formatterMoney } from '../../utils/formatterMoney'
 
 interface FormState {
   customer: string
@@ -29,15 +30,15 @@ export const SaleData: FC = () => {
     (accu, curr) => accu + curr.price * curr.saleAmount,
     0
   )
+  const totalFormatted = useMemo(() => formatterMoney(total), [total])
 
-  const disabledButtonSale = useMemo(
+  const isDiableForm = useMemo(
     () => productsSales.length === 0,
     [productsSales]
   )
 
   const onSumit = handleSubmit((data) => {
-    const { customer, dni } = data
-    newSale(customer, dni)
+    newSale(data)
   })
 
   useEffect(() => {
@@ -53,7 +54,7 @@ export const SaleData: FC = () => {
     <div>
       <header className="w-full bg-blue-800 py-5 px-3 rounded-tl-md rounded-tr-md">
         <h3 className="font-black text-white text-center text-2xl">
-          Total: {total}
+          Total: {totalFormatted}
         </h3>
       </header>
       <div className="mb-5 px-3 py-4">
@@ -71,6 +72,8 @@ export const SaleData: FC = () => {
                   autoComplete="off"
                   maxLength={8}
                   {...field}
+                  disabled={isDiableForm}
+
                 />
               )}
             />
@@ -89,6 +92,7 @@ export const SaleData: FC = () => {
                   placeholder="Ingrese el nombre del cliente"
                   autoComplete="off"
                   {...field}
+                  disabled={isDiableForm}
                 />
               )}
             />
@@ -102,7 +106,7 @@ export const SaleData: FC = () => {
           <div>
             <ButtonPrimary
               className="w-full flex gap-2 justify-center items-center"
-              disabled={disabledButtonSale}
+              disabled={isDiableForm}
               isLoading={isLoading}
             >
               <AiOutlineShoppingCart size={20} />
