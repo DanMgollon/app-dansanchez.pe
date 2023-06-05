@@ -22,7 +22,6 @@ export const FormProduct: FC<Props> = ({
   activeAreas
 }) => {
   const {
-    register,
     handleSubmit,
     formState: { errors },
     control,
