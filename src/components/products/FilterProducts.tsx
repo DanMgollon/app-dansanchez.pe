@@ -5,6 +5,7 @@ import { CiSearch } from 'react-icons/ci'
 import { type Area } from '@/interfaces'
 import { Controller, useForm, useWatch } from 'react-hook-form'
 import { useProductStore } from '@/store'
+import { useDebounce } from '@/hooks'
 
 const OPTIONS_STATUS = [
   { value: '', label: 'Todos' },
@@ -33,8 +34,8 @@ export const FilterProducts: FC<Props> = ({ areas }) => {
     control,
     name: ['productSearch', 'status', 'areasSelected']
   })
-  const page = useProductStore((state) => state.page)
-  const setIsSearch = useProductStore((state) => state.setIsSearch)
+  const getProducts = useProductStore((state) => state.getProducts)
+  const debounce = useDebounce()
 
   const areasOptions = useMemo(() => {
     return areas.map((area) => ({
@@ -49,16 +50,10 @@ export const FilterProducts: FC<Props> = ({ areas }) => {
       .join('%2C')
     const statusAsString = (status as unknown as SelectOptions)?.value
 
-    if (
-      productSearch === '' &&
-      (statusAsString === undefined || statusAsString === '') &&
-      (areasSelectedAsString === undefined || areasSelectedAsString === '')
-    ) {
-      setIsSearch(false)
-      return
-    }
-    setIsSearch(true)
-  }, [productSearch, status, areasSelected, page])
+    debounce(() => {
+      getProducts(productSearch, areasSelectedAsString, statusAsString)
+    }, 700)
+  }, [productSearch, status, areasSelected])
 
   return (
     <section>

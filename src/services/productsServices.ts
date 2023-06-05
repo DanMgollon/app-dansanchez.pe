@@ -1,17 +1,24 @@
 import { ferreteriaApi } from '@/api'
-import { type SearchProduct, type Product, type ProductsResponse, type SearchProductResponse } from '@/interfaces'
-import { type AxiosError } from 'axios'
+import type {
+  GetProductsRequest,
+  Product,
+  ProductsResponse
+} from '@/interfaces'
+import type { AxiosError } from 'axios'
 
 interface AreaError {
   message: string
 }
 
-export const getProductsService = async (
-  page: number
-): Promise<ProductsResponse> => {
+export const getProductsService = async ({
+  page,
+  q = '',
+  areas = '',
+  status = ''
+}: GetProductsRequest): Promise<ProductsResponse> => {
   try {
     const { data } = await ferreteriaApi.get<ProductsResponse>(
-      `/products?page=${page}`
+      `/products?q=${q}&areas=${areas}&status=${status}&page=${page}`
     )
     return {
       total: data.total,
@@ -46,23 +53,6 @@ export const updateProductService = async (
     const { data } = await ferreteriaApi.put<Product>(
       `/products/${product.id}`,
       product
-    )
-    return data
-  } catch (error) {
-    const { response } = error as AxiosError<AreaError>
-    const errorMessage = response?.data.message
-    throw new Error(errorMessage)
-  }
-}
-
-export const searchProductsService = async ({
-  query,
-  areas,
-  status
-}: SearchProduct): Promise<SearchProductResponse> => {
-  try {
-    const { data } = await ferreteriaApi.get<SearchProductResponse>(
-      `/products/search?query=${query}&areas=${areas}&status=${status}&page=${page}`
     )
     return data
   } catch (error) {

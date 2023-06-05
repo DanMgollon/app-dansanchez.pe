@@ -29,21 +29,61 @@ export default async function handler (
   }
 }
 
+interface SearchQuery {
+  q: string
+  areas: string
+  status: string
+  page: string
+}
+
 const getProducts = async (
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ): Promise<void> => {
-  const { query } = req
   const DATA_POR_PAGE = 20
+
+  const { areas, q, status, page } = req.query as unknown as SearchQuery
+  const searchProduct = q ?? undefined
   try {
-    const page =
-      query.page === '1' || query.page === undefined
+    const pageData =
+      page === '1' || page === undefined
         ? 0
         : Number(req.query.page)
-    const skip = DATA_POR_PAGE * page
+    const areasAsArrayNumber =
+        areas === undefined || areas === ''
+          ? undefined
+          : areas?.split(',').map((area) => Number(area))
+    const statusAsNumber =
+          status === undefined || status === ''
+            ? undefined
+            : Number(status)
+    const skip = DATA_POR_PAGE * pageData
 
-    const total = await prisma.products.count()
+    const total = await prisma.products.findMany({
+      where: {
+        name: {
+          contains: searchProduct
+        },
+        area_id: {
+          in: areasAsArrayNumber
+        },
+        status_id: {
+          equals: statusAsNumber
+        }
+      }
+    })
     const products = await prisma.products.findMany({
+      where: {
+        name: {
+          contains: searchProduct
+        },
+        area_id: {
+          in: areasAsArrayNumber
+        },
+        status_id: {
+          equals: statusAsNumber
+        }
+      },
       take: DATA_POR_PAGE,
       skip,
       select: {
@@ -60,13 +100,12 @@ const getProducts = async (
     const to = skip + products.length
 
     res.status(200).json({
-      total,
+      total: total.length,
       from,
       to,
       products: products as unknown as Product[]
     })
   } catch (error) {
-    console.log(error)
     res.status(400).json({ message: 'No se pudo obtener los productos' })
   }
 }

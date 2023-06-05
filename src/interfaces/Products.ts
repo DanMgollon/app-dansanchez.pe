@@ -39,9 +39,9 @@ export interface SearchProductResponse {
   to: number
 }
 
-export interface SearchProduct {
-  query: string
-  areas: string
-  status: string
+export interface GetProductsRequest {
   page: number
+  q?: string | undefined
+  areas?: string | undefined
+  status?: string | undefined
 }

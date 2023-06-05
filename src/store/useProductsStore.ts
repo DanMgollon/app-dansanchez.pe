@@ -1,12 +1,12 @@
-import { type SearchProduct, type Product } from '@/interfaces'
+import type { Product } from '@/interfaces'
 import {
   createProductService,
   getProductsService,
-  searchProductsService,
   updateProductService
 } from '@/services'
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
+import { useSearchProductStore } from './useSearchProductStore'
 
 interface ProductsState {
   totalProducts: number
@@ -26,16 +26,14 @@ interface ProductsState {
 }
 
 interface Actions {
-  getProducts: () => void
+  getProducts: (
+    searchProduct?: string | undefined,
+    areas?: string | undefined,
+    status?: string | undefined
+  ) => void
   changePage: (page: number) => void
   createProduct: (product: Omit<Product, 'id'>) => void
   updateProduct: (product: Product) => void
-  searchProduct: ({
-    query,
-    areas,
-    status
-  }: Omit<SearchProduct, 'page'>) => void
-  setIsSearch: (isSearch: boolean) => void
 }
 
 export const useProductStore = create<ProductsState & Actions>()(
@@ -54,11 +52,20 @@ export const useProductStore = create<ProductsState & Actions>()(
     isLoading: false,
     productSearch: null,
     isSearch: false,
-    getProducts: async () => {
+    getProducts: async (searchProduct, areas, status) => {
+      const setSearchProduct =
+        useSearchProductStore.getState().setSearchProduct
+      setSearchProduct(searchProduct, areas, status)
+      set(() => ({ page: 1 }))
       const { page } = get()
       set(() => ({ loadingProducts: true }))
       try {
-        const resp = await getProductsService(page)
+        const resp = await getProductsService({
+          page,
+          q: searchProduct,
+          areas,
+          status
+        })
         set(() => ({ products: resp.products }))
         set(() => ({ totalProducts: resp.total }))
         set((state) => ({
@@ -111,34 +118,6 @@ export const useProductStore = create<ProductsState & Actions>()(
     },
     changePage: (page) => {
       set(() => ({ page }))
-    },
-    searchProduct: async ({ query, areas, status }) => {
-      const page = get().page
-      set(() => ({ isLoading: true }))
-      try {
-        const { total, products, from, to } = await searchProductsService({
-          query,
-          areas,
-          status,
-          page
-        })
-        set(() => ({ totalProducts: total }))
-        set(() => ({
-          totalPages: Math.floor(total / get().productPorPage),
-          products,
-          from,
-          to
-        }))
-      } catch (error) {
-        const message = (error as Error).message
-        set(() => ({ errorMessage: message }))
-        set(() => ({ errorMessage: null }))
-      } finally {
-        set(() => ({ isLoading: false }))
-      }
-    },
-    setIsSearch: (value) => {
-      set(() => ({ isSearch: value }))
     }
   }))
 )

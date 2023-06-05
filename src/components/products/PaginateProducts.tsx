@@ -1,26 +1,36 @@
-import { useProductStore } from '@/store'
+import { useProductStore, useSearchProductStore } from '@/store'
 import { type FC, useMemo } from 'react'
 import ReactPaginate from 'react-paginate'
+import { shallow } from 'zustand/shallow'
 
 export const PaginateProducts: FC = () => {
-  const totalPage = useProductStore((state) => state.totalPages)
-  const changePage = useProductStore((state) => state.changePage)
-  const getNextProducts = useProductStore((state) => state.getProducts)
-  // const isSearch = useProductStore((state) => state.isSearch)
-  // const searchProducts = useProductStore((state) => state.searchProduct)
-  const page = useProductStore((state) => state.page)
+  const {
+    totalPages,
+    page,
+    getNextProducts
+  } = useProductStore((state) => ({
+    totalPages: state.totalPages,
+    page: state.page,
+    getNextProducts: state.getProducts
+  }), shallow)
+  const { searchProduct, areas, status } = useSearchProductStore((state) => ({
+    searchProduct: state.searchProduct,
+    areas: state.areas,
+    status: state.status
+  }), shallow)
 
+  const changePage = useProductStore((state) => state.changePage)
   const handlePageClick = (evt: { selected: number }): void => {
     const newPage = evt.selected + 1
     changePage(newPage)
-    getNextProducts()
+    getNextProducts(searchProduct, areas, status)
   }
 
   const forPageValue = useMemo(() => (page === 0 ? 0 : page - 1), [])
 
   return (
     <ReactPaginate
-      pageCount={totalPage}
+      pageCount={totalPages}
       previousLabel="<"
       nextLabel=">"
       pageLinkClassName="w-ful h-full"
