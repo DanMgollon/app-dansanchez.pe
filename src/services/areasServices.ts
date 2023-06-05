@@ -45,7 +45,6 @@ export const deleteAreaService = async (id: number): Promise<Area> => {
     const { data } = await ferreteriaApi.delete(`/areas/${id}`)
     return data
   } catch (error) {
-    // tipa el error con la propiedad message de tipo string
     const { response } = error as AxiosError<AreaError>
     const errorMessage = response?.data.message
     throw new Error(errorMessage)
