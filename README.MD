@@ -20,7 +20,7 @@ Este script contiene tantos las tablas como algunos datos de prueba para la base
 [DESCARGAR SCRIPT PARA RESTAURAR LA BASE DE DATOS](/public/scripts/)   
 
 ## ¿Cómo iniciar el proyecto?
-Para iniciar el proyecto debemos descargarlo ya sea mediante zio o clonando el repositorio.
+Para iniciar el proyecto debemos descargarlo ya sea mediante zip o clonando el repositorio.
 
 ```
   git clone https://github.com/Kevin04C/app_ferreteria
