@@ -1,5 +1,6 @@
 import { ButtonPrimary } from '@/ui'
-import { type FC, useMemo, useEffect } from 'react'
+import { useMemo, useEffect } from 'react'
+import type { FC, FormEvent } from 'react'
 import { AiOutlineShoppingCart } from 'react-icons/ai'
 import { ErrorForm, InputField } from '../form'
 import { useForm, Controller } from 'react-hook-form'
@@ -7,23 +8,34 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { salesRegisterCustomerSchema } from '@/validations'
 import { useSalesStore } from '@/store'
 import { formatterMoney } from '../../utils/formatterMoney'
+import { useUserDNI } from '@/store/useUserDNI'
+import { shallow } from 'zustand/shallow'
 
 interface FormState {
-  customer: string
   dni: string
 }
 
 export const SaleData: FC = () => {
-  const newSale = useSalesStore((state) => state.newSale)
-  const successfullySale = useSalesStore((state) => state.successfullySale)
   const {
     handleSubmit,
     control,
     formState: { errors },
-    reset
+    reset,
+    getValues
   } = useForm<FormState>({
     resolver: yupResolver(salesRegisterCustomerSchema)
   })
+  const { fullName, searchUserDNI, isSearching, errorDNI } = useUserDNI(
+    (state) => ({
+      fullName: state.fullName,
+      searchUserDNI: state.searchUserDNI,
+      isSearching: state.isSearching,
+      errorDNI: state.errorDNI
+    }),
+    shallow
+  )
+  const newSale = useSalesStore((state) => state.newSale)
+  const successfullySale = useSalesStore((state) => state.successfullySale)
   const productsSales = useSalesStore((state) => state.productsSales)
   const isLoading = useSalesStore((state) => state.isLoading)
   const total = productsSales.reduce(
@@ -32,23 +44,35 @@ export const SaleData: FC = () => {
   )
   const totalFormatted = useMemo(() => formatterMoney(total), [total])
 
-  const isDiableForm = useMemo(
-    () => productsSales.length === 0,
-    [productsSales]
-  )
+  const isDisableForm = useMemo(() => {
+    return productsSales.length === 0 || isSearching
+  }, [productsSales, isSearching])
 
   const onSumit = handleSubmit((data) => {
-    newSale(data)
+    const { dni } = data
+    if (fullName === null) return
+    newSale({ dni, customer: fullName })
   })
 
   useEffect(() => {
     if (successfullySale) {
-      reset({
-        customer: '',
-        dni: ''
-      })
+      reset({ dni: '' }, { keepValues: false })
     }
   }, [successfullySale])
+
+  const handleBlur = async (): Promise<void> => {
+    const dni = getValues('dni')
+    if (dni === '' || dni === undefined) return
+    if (dni.length < 8) return
+    searchUserDNI(dni)
+  }
+
+  const handleInput = (evt: FormEvent<HTMLInputElement>): void => {
+    const value = evt.currentTarget.value
+    if (value.length > 8) {
+      evt.currentTarget.value = value.slice(0, 8)
+    }
+  }
 
   return (
     <div>
@@ -66,14 +90,16 @@ export const SaleData: FC = () => {
               control={control}
               render={({ field }) => (
                 <InputField
+                  id="dni"
                   label="DNI"
                   type="number"
                   placeholder="Ingrese el DNI del cliente"
                   autoComplete="off"
                   maxLength={8}
                   {...field}
-                  disabled={isDiableForm}
-
+                  disabled={isDisableForm}
+                  onBlur={handleBlur}
+                  onInput={handleInput}
                 />
               )}
             />
@@ -82,31 +108,22 @@ export const SaleData: FC = () => {
             )}
           </div>
           <div className="mb-5">
-            <Controller
-              name="customer"
-              control={control}
-              render={({ field }) => (
-                <InputField
-                  label="Cliente"
-                  type="text"
-                  placeholder="Ingrese el nombre del cliente"
-                  autoComplete="off"
-                  {...field}
-                  disabled={isDiableForm}
-                />
-              )}
+            <InputField
+              label="Cliente"
+              type="text"
+              placeholder="Ingrese el nombre del cliente"
+              autoComplete="off"
+              disabled={true}
+              value={fullName ?? ''}
+              readOnly
             />
-            {errors.customer !== undefined && (
-              <ErrorForm message={errors.customer.message as string} />
-            )}
           </div>
-
+          {errorDNI !== null && <ErrorForm message={errorDNI} />}
           <span className="block border border-b-1 border-gray-100 mb-5"></span>
-
           <div>
             <ButtonPrimary
               className="w-full flex gap-2 justify-center items-center"
-              disabled={isDiableForm}
+              disabled={isDisableForm}
               isLoading={isLoading}
             >
               <AiOutlineShoppingCart size={20} />

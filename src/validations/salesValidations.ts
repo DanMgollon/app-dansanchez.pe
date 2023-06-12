@@ -10,7 +10,6 @@ export const productSalesSchema = yup.object().shape({
 })
 
 export const salesRegisterCustomerSchema = yup.object().shape({
-  customer: yup.string().required('El nombre es requerido'),
   dni: yup
     .string()
     .required('El DNI es requerido')
