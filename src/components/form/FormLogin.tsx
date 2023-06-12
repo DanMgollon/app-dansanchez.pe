@@ -56,7 +56,7 @@ export const FormLogin: FC = () => {
         <input
           type="text"
           className="w-full bg-gray-50 border border-gray-300 rounded-[10px] py-[7px] px-4 outline-none"
-          placeholder="ferreteria"
+          placeholder="usuario"
           {...register('username')}
           autoComplete="off"
         />
