@@ -40,21 +40,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 5
   },
-  productsWrapper: {
-    flexDirection: 'row',
-    gap: 5,
-    fontSize: 14,
-    marginTop: 10
-  },
-  productsDescriptionColumn: {
-    width: '60%',
-    textAlign: 'center'
-  },
-  columnsList: {
-    marginTop: 10,
-    flexDirection: 'column',
-    gap: 5
-  },
   salesDataWrapper: {
     marginVertical: 10
   },
@@ -68,40 +53,65 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     fontSize: 14
   },
-  productsUnitPrice: {
-    width: '20%',
-    textAlign: 'center'
-  },
-  productsTotalPrice: {
-    width: '20%',
-    textAlign: 'right'
-  },
   totalPriceWrapper: {
     marginTop: 20,
     fontSize: 15,
     textAlign: 'right',
     borderTop: '1px solid #000000',
     paddingTop: 5
+  },
+  dataProductsRow: {
+    flex: 1,
+    flexDirection: 'row',
+    gap: 10
+  },
+  productsDataItemHeader: {
+    flexGrow: 1,
+    fontSize: 14
+  },
+  productsDataItemValue: {
+    textAlign: 'right'
+  },
+  dataProductsWrapper: {
+    marginTop: 10
+  },
+  productsListWrapper: {
+    marginTop: 25,
+    flexDirection: 'column',
+    gap: 20
+  },
+  textNormal: {
+    fontSize: 14
+  },
+  saleDetailsIVG: {
+    display: 'flex',
+    flexDirection: 'row',
+    gap: 10,
+    marginTop: 30,
+    fontSize: 15,
+    marginLeft: 'auto',
+    fontWeight: 'bold'
   }
 })
 
-const SalePDF = ({ products, customer, date }: NewSalePDFData): JSX.Element => {
+export const SalePDF = ({
+  products = [],
+  customer,
+  date
+}: NewSalePDFData): JSX.Element => {
   const formatter = new Intl.NumberFormat('es-PE', {
     style: 'currency',
     currency: 'PEN'
   })
+  const total = products?.reduce((acu, curr) => acu + curr.price * curr.saleAmount, 0)
+  const totalFormated = formatter.format(total)
+  const productsData = products?.map(product => ({
+    name: `${product.name} ${product.saleAmount} UNIDADES`,
+    uniquePrice: product.price,
+    total: formatter.format(product.price * product.saleAmount)
+  }))
+  const igv = formatter.format(total * 0.18)
 
-  const productsName =
-    products.map(
-      (product) => `${product.name} ${product.saleAmount} UNIDADES`
-    ) ?? []
-  const productsPrice = products.map((product) => product.price) ?? []
-  const productsTotalPrice = products.map((product) =>
-    formatter.format(product.price * product.saleAmount)
-  )
-  const total = formatter.format(
-    products?.reduce((acu, curr) => acu + curr.price * curr.saleAmount, 0)
-  )
   return (
     <Document>
       <Page size="A4" style={styles.page}>
@@ -143,34 +153,79 @@ const SalePDF = ({ products, customer, date }: NewSalePDFData): JSX.Element => {
             </View>
           </View>
         </View>
-        <View style={styles.productsWrapper}>
-          <View style={styles.productsDescriptionColumn}>
-            <Text>COD DESCRIPCION CANT</Text>
-            <View style={styles.columnsList}>
-              {productsName?.map((product) => (
-                <Text key={crypto.randomUUID()}>{product}</Text>
+        <View style={styles.dataProductsWrapper}>
+          <View>
+            <View style={[styles.dataProductsRow, styles.textNormal]}>
+              <Text
+                style={{
+                  flexBasis: '60%'
+                }}
+              >
+                CÓDIGO DESCRIPCIÓN CANT
+              </Text>
+              <Text
+                style={{
+                  flexBasis: '20%'
+                }}
+              >
+                P.UNIT
+              </Text>
+              <Text
+                style={{
+                  flexBasis: '20%'
+                }}
+              >
+                P.TOTAL
+              </Text>
+            </View>
+            <View style={[styles.productsListWrapper, styles.textNormal]}>
+              {productsData?.map((product) => (
+                <View key={product.name} style={styles.dataProductsRow}>
+                  <Text
+                    style={{
+                      flexBasis: '60%'
+                    }}
+                  >
+                    {product.name}
+                  </Text>
+                  <Text
+                    style={{
+                      flexBasis: '20%'
+                    }}
+                  >
+                    {product.uniquePrice}
+                  </Text>
+                  <Text
+                    style={{
+                      flexBasis: '20%'
+                    }}
+                  >
+                    {product.total}
+                  </Text>
+                </View>
               ))}
             </View>
-          </View>
-          <View style={styles.productsUnitPrice}>
-            <Text>P UNIT</Text>
-            <View style={styles.columnsList}>
-              {productsPrice?.map((price) => (
-                <Text key={crypto.randomUUID()}>{price}</Text>
-              ))}
-            </View>
-          </View>
-          <View style={styles.productsTotalPrice}>
-            <Text>P TOTAL</Text>
-            <View style={styles.columnsList}>
-              {productsTotalPrice.map((totalPrice) => (
-                <Text key={crypto.randomUUID()}>{totalPrice}</Text>
-              ))}
+            <View style={styles.saleDetailsIVG}>
+              <Text
+                style={{
+                  flexBasis: '20%'
+                }}
+              >
+                IVG:
+              </Text>
+              <Text
+                style={{
+                  flexBasis: '20%'
+                }}
+              >
+                {igv}
+              </Text>
             </View>
           </View>
         </View>
+        <View></View>
         <View style={styles.totalPriceWrapper}>
-          <Text>IMPORTE TOTAL {total}</Text>
+          <Text>IMPORTE TOTAL {totalFormated}</Text>
         </View>
       </Page>
     </Document>
