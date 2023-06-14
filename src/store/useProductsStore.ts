@@ -10,9 +10,7 @@ import { useSearchProductStore } from './useSearchProductStore'
 
 interface ProductsState {
   totalProducts: number
-  isSearch: boolean
   products: Product[]
-  productSearch: Product | null
   errorMessage: string | null
   page: number
   totalPages: number
@@ -50,8 +48,6 @@ export const useProductStore = create<ProductsState & Actions>()(
     isCreated: false,
     isUpdated: false,
     isLoading: false,
-    productSearch: null,
-    isSearch: false,
     getProducts: async (searchProduct, areas, status) => {
       const setSearchProduct =
         useSearchProductStore.getState().setSearchProduct
@@ -92,7 +88,9 @@ export const useProductStore = create<ProductsState & Actions>()(
       } catch (error) {
         const message = (error as Error).message
         set(() => ({ errorMessage: message }))
-        set(() => ({ errorMessage: null }))
+        setTimeout(() => {
+          set(() => ({ errorMessage: null }))
+        })
       } finally {
         set(() => ({ isLoading: false }))
       }

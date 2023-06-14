@@ -16,6 +16,7 @@ interface Props {
 const NewProductPagee: FC<Props> = ({ activeAreas, productsTypes }) => {
   const createProduct = useProductStore((state) => state.createProduct)
   const isCreated = useProductStore((state) => state.isCreated)
+  const errorMessage = useProductStore((state) => state.errorMessage)
 
   const onSubmit = (data: Product): void => {
     createProduct(data)
@@ -28,6 +29,14 @@ const NewProductPagee: FC<Props> = ({ activeAreas, productsTypes }) => {
       })
     }
   }, [isCreated])
+
+  useEffect(() => {
+    if (errorMessage !== null) {
+      toast.error(errorMessage, {
+        position: 'top-right'
+      })
+    }
+  }, [errorMessage])
 
   return (
     <DashboardLayout>

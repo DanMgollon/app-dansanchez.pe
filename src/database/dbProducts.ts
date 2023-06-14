@@ -15,7 +15,7 @@ export const getProductsTypes = async (): Promise<ProductTypes | null> => {
   }
 }
 
-export const findProductById = async (id: number): Promise<Product | null> => {
+export const findProductById = async (id: string): Promise<Product | null> => {
   try {
     const product = await prisma.products.findUnique({
       where: {

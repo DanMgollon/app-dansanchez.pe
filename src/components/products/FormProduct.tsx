@@ -1,5 +1,5 @@
 import { ButtonPrimary } from '@/ui'
-import { type FC, useEffect } from 'react'
+import { type FC, useEffect, useMemo } from 'react'
 import { IoSaveOutline } from 'react-icons/io5'
 import { InputField, ErrorForm, Select } from '../form'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -35,11 +35,30 @@ export const FormProduct: FC<Props> = ({
 
   useEffect(() => {
     if (isCreated) {
-      reset()
+      reset(
+        {
+          id: '',
+          name: '',
+          price: 0,
+          stock: 0,
+          areas: {
+            id: 0
+          },
+          products_types: {
+            id: 0
+          },
+          status: {
+            active: false
+          }
+        },
+        { keepValues: false }
+      )
     }
   }, [isCreated])
 
-  console.log(errors)
+  const isEdit = useMemo(() => {
+    return product?.id !== undefined
+  }, [product])
 
   return (
     <form
@@ -47,6 +66,25 @@ export const FormProduct: FC<Props> = ({
       onSubmit={handleSubmit(onSubmit)}
     >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <Controller
+            name="id"
+            control={control}
+            render={({ field }) => (
+              <InputField
+                label="ID del producto"
+                type="text"
+                placeholder="Ej: AEX71"
+                disabled={isEdit}
+                {...field}
+              />
+            )}
+          />
+          {errors.id !== undefined && (
+            <ErrorForm message={errors.id.message as string} />
+          )}
+        </div>
+
         <div>
           <Controller
             name="name"
@@ -150,8 +188,13 @@ export const FormProduct: FC<Props> = ({
           <Controller
             name="status.active"
             control={control}
-            render={({ field }) => (
-              <Select label="Estado del producto" {...field}>
+            render={({ field: { value, ...rest } }) => (
+              <Select
+                label="Estado del producto"
+                value={value?.toString() ?? ''}
+                {...rest}
+              >
+                <option value="">-- Selecione estado --</option>
                 <option value="false">No Activo</option>
                 <option value="true" className="block py-5">
                   Activo
@@ -166,7 +209,7 @@ export const FormProduct: FC<Props> = ({
         </div>
       </div>
       <ButtonPrimary
-        className="mt-5 flex justify-center items-center gap-2"
+        className="mt-5 flex justify-center items-center gap-2 w-full"
         isLoading={isLoading}
       >
         <IoSaveOutline size={20} />

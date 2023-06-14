@@ -7,7 +7,7 @@ export interface Product extends ProductLean {
 }
 
 export interface ProductSale {
-  id: number
+  id: string
   name: string
   price: number
   stock: number
@@ -19,7 +19,7 @@ export interface ProductsSalesStore extends ProductSale {
   saleAmount: number
 }
 export interface ProductLean {
-  id: number
+  id: string
   name: string
   price: number
   stock: number

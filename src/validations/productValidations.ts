@@ -3,6 +3,7 @@ import * as yup from 'yup'
 export const schemaCreateProduct = yup
   .object()
   .shape({
+    id: yup.string().required('El id es requerido'),
     name: yup.string().required('El nombre es requerido'),
     price: yup
       .number()
@@ -35,10 +36,7 @@ export const schemaCreateProduct = yup
 export const schemaUpdateProduct = yup
   .object()
   .shape({
-    id: yup
-      .number()
-      .required('El id es obligatorio')
-      .typeError('El id es obligatorio'),
+    id: yup.string().required('El id es requerido'),
     name: yup.string().required('El nombre es requerido'),
     price: yup
       .number()
@@ -58,9 +56,8 @@ export const schemaUpdateProduct = yup
     }),
     products_types: yup.object().shape({
       id: yup
-        .number()
+        .string()
         .required('El tipo de producto es requerido')
-        .typeError('El tipo de producto es requerido')
     }),
     status: yup.object().shape({
       active: yup.boolean().required('El estado es requerido')

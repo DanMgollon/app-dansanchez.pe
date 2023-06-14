@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { prisma } from '../../../../prisma/prismaClient'
 import type { Product } from '@/interfaces'
 import { schemaCreateProduct } from '@/validations'
+import { type InferType } from 'yup'
 
 type Data =
   | { message: string }
@@ -50,13 +51,14 @@ const getProducts = async (
         ? 0
         : Number(req.query.page)
     const areasAsArrayNumber =
-        areas === undefined || areas === ''
-          ? undefined
-          : areas?.split(',').map((area) => Number(area))
+      areas === undefined || areas === ''
+        ? undefined
+        : areas?.split(',').map((area) => Number(area))
     const statusAsNumber =
-          status === undefined || status === ''
-            ? undefined
-            : Number(status)
+      status === undefined || status === ''
+        ? undefined
+        : Number(status)
+
     const skip = DATA_POR_PAGE * pageData
 
     const total = await prisma.products.findMany({
@@ -113,15 +115,40 @@ const createProduct = async (
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ): Promise<void> => {
-  const { body } = req
+  const body = req.body as InferType<typeof schemaCreateProduct>
   try {
     const isValid = schemaCreateProduct.isValidSync(body)
+
     if (!isValid) {
-      res.status(400).json({ message: 'Faltan datos y/o no es valida' })
+      res.status(400).json({ message: 'Faltan datos y/o no son válidos' })
       return
     }
+    const productExistsById = await prisma.products.findUnique({
+      where: {
+        id: body.id
+      }
+    })
+    if (productExistsById !== undefined && productExistsById !== null) {
+      res
+        .status(400)
+        .json({ message: `Ya existe un producto con el id ${body.id}` })
+      return
+    }
+    const productExistByName = await prisma.products.findFirst({
+      where: {
+        name: body.name
+      }
+    })
+    if (productExistByName !== undefined && productExistByName !== null) {
+      res
+        .status(400)
+        .json({ message: `Ya existe un producto con el nombre ${body.name}` })
+      return
+    }
+
     const product = await prisma.products.create({
       data: {
+        id: body.id.toUpperCase(),
         name: body.name,
         price: body.price,
         stock: body.stock,

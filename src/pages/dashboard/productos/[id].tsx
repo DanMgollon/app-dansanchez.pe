@@ -54,9 +54,8 @@ export default EditProductPage
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const { id } = ctx.query
-  const idAsNumber = Number(id)
 
-  const product = await dbProducts.findProductById(idAsNumber)
+  const product = await dbProducts.findProductById(id as string)
 
   if (product === null) {
     return {

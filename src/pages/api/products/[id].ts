@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { prisma } from '../../../../prisma/prismaClient'
 import { schemaUpdateProduct } from '@/validations'
 import type { Product } from '@/interfaces'
+import { type InferType } from 'yup'
 
 type Data =
   | { message: string }
@@ -18,7 +19,7 @@ export default async function handler (req: NextApiRequest, res: NextApiResponse
 }
 
 const editProduct = async (req: NextApiRequest, res: NextApiResponse<Data>): Promise<void> => {
-  const { body } = req
+  const body = req.body as InferType<typeof schemaUpdateProduct>
 
   const isValid = schemaUpdateProduct.isValidSync(body)
   if (!isValid) {
@@ -26,17 +27,16 @@ const editProduct = async (req: NextApiRequest, res: NextApiResponse<Data>): Pro
     return
   }
   const id = req.query.id as string
-  const idAsNumber = Number(id)
 
   try {
-    const product = await prisma.products.findUnique({ where: { id: idAsNumber } })
+    const product = await prisma.products.findUnique({ where: { id } })
     if (product === undefined) {
       res.status(400).json({ message: `El producto con el id ${id} no existe` })
     }
 
     const productUpdate = await prisma.products.update({
       where: {
-        id: idAsNumber
+        id
       },
       data: {
         name: body.name,
@@ -44,7 +44,7 @@ const editProduct = async (req: NextApiRequest, res: NextApiResponse<Data>): Pro
         stock: body.stock,
         area_id: body.areas.id,
         status_id: body.status.active ? 2 : 1,
-        products_type_id: body.products_types.id
+        products_type_id: Number(body.products_types.id)
       },
       select: {
         id: true,
