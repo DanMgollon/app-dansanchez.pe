@@ -7,7 +7,7 @@ interface Props {
 
 export const Table: FC<Props> = ({ heads, children }) => {
   return (
-    <div className='relative overflow-x-auto shadow-md sm:rounded-lg'>
+    <div className='relative overflow-x-auto shadow-md sm:rounded-lg mb-5'>
       <table className="table-auto w-full">
         <thead className="text-xs font-semibold uppercase text-white bg-blue-800">
           <tr>
@@ -18,7 +18,9 @@ export const Table: FC<Props> = ({ heads, children }) => {
             ))}
           </tr>
         </thead>
-        {children}
+        <tbody>
+          {children}
+        </tbody>
       </table>
     </div>
   )
