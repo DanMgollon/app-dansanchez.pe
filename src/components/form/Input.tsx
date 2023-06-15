@@ -1,5 +1,6 @@
-import type { FC, HTMLInputTypeAttribute, InputHTMLAttributes } from 'react'
+import type { HTMLInputTypeAttribute, InputHTMLAttributes } from 'react'
 import type { UseFormRegisterReturn } from 'react-hook-form'
+import { forwardRef } from 'react'
 
 interface Props extends InputHTMLAttributes<HTMLInputElement> {
   type: HTMLInputTypeAttribute
@@ -7,8 +8,9 @@ interface Props extends InputHTMLAttributes<HTMLInputElement> {
   register?: UseFormRegisterReturn
 }
 
-export const Input: FC<Props> = ({ type, placeholder, disabled, className, ...rest }, ref) => {
-  return (
+export const Input = forwardRef<any, Props>(
+  ({ type, placeholder, disabled, className, ...rest }, ref) => {
+    return (
       <input
         type={type}
         placeholder={placeholder}
@@ -17,8 +19,10 @@ export const Input: FC<Props> = ({ type, placeholder, disabled, className, ...re
         }${className ?? ''}`}
         disabled={disabled}
         {...rest}
+        ref={ref}
       />
-  )
-}
+    )
+  }
+)
 
 export default Input

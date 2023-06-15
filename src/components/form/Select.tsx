@@ -1,15 +1,13 @@
-import { type ReactNode, type FC, type SelectHTMLAttributes } from 'react'
-import { useId } from 'react'
+import type { ReactNode, SelectHTMLAttributes } from 'react'
+import { useId, forwardRef } from 'react'
 import { LabelField } from './LabelField'
-import type { UseFormRegisterReturn } from 'react-hook-form'
 
 interface Props extends SelectHTMLAttributes<HTMLSelectElement> {
   children: ReactNode
   label: string
-  register?: UseFormRegisterReturn
 }
 
-export const Select: FC<Props> = ({ label, children, register, ...rest }) => {
+export const Select = forwardRef<any, Props>(({ label, children, ...rest }, ref) => {
   const id = useId()
   return (
     <>
@@ -17,11 +15,11 @@ export const Select: FC<Props> = ({ label, children, register, ...rest }) => {
       <select
         id={id}
         className='w-full border bg-slate-50 border-slate-300 outline-none rounded-md py-2 px-3 text-sm focus:shadow'
-        {...register}
         {...rest}
+        ref={ref}
       >
         {children}
       </select>
     </>
   )
-}
+})
