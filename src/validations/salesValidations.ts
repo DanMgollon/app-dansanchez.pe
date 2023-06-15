@@ -22,7 +22,7 @@ export const newSalesSchema = yup.object().shape({
     .array()
     .of(
       yup.object().shape({
-        id: yup.number().required('El id es requerido'),
+        id: yup.string().required('El id es requerido'),
         name: yup.string().required('El nombre es requerido'),
         price: yup.number().required('El precio es requerido'),
         stock: yup.number().required('El stock es requerido'),

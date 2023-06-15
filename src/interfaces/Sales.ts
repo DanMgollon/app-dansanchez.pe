@@ -5,6 +5,19 @@ export interface Customer {
   dni: string
 }
 
+export interface Sale {
+  id: number
+  customer: string
+  dni: string
+  date: Date
+}
+
+export interface SalePDF extends Sale {
+  pdfs: {
+    url: string
+  }
+}
+
 export interface NewSalePDFData {
   products: ProductsSalesStore[]
   customer: Customer
@@ -16,10 +29,25 @@ export interface NewSaleRequest {
   userId: number
 }
 
-export interface SalesResponseSuccess {
+export interface NewSaleResponseSuccess {
   PDFUrl: string
 }
 
-export interface SalesErrorResponse {
+export interface NewSaleResponseError {
   message: string
+}
+
+export interface GetSalesResponseError {
+  message: string
+}
+export interface GetSalesResponseSuccess {
+  sales: SalePDF[]
+  total: number
+  from: number
+  to: number
+}
+
+export interface GetSalesRequest {
+  customer?: string
+  page?: number
 }

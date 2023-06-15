@@ -4,10 +4,17 @@ import type * as yup from 'yup'
 import { prisma } from '../../../../prisma/prismaClient'
 import { generateNewSalePDF } from '@/components/reports'
 import { uploadPFD } from '@/utils'
+import type { SalePDF } from '@/interfaces'
 
 type Data =
   | { message: string }
   | { PDFUrl: string }
+  | {
+    total: number
+    from: number
+    to: number
+    sales: SalePDF[]
+  }
 
 export default async function handler (
   req: NextApiRequest,
@@ -16,6 +23,9 @@ export default async function handler (
   switch (req.method) {
     case 'POST':
       newSale(req, res)
+      break
+    case 'GET':
+      getSales(req, res)
       break
     default:
       res.status(400).json({
@@ -70,7 +80,7 @@ const newSale = async (
     PDFAsBuffer.on('end', async () => {
       const pdfBuffer = Buffer.concat(chunks as any)
       const url = await uploadPFD(pdfBuffer)
-      await prisma.pdfs_url.create({
+      await prisma.pdfs.create({
         data: {
           url,
           sales_id: id
@@ -83,5 +93,65 @@ const newSale = async (
     res.status(500).json({
       message: 'Error al crear la venta'
     })
+  }
+}
+
+interface SearchSales {
+  customer: string
+  page: string
+}
+
+const getSales = async (
+  req: NextApiRequest,
+  res: NextApiResponse<Data>
+): Promise<void> => {
+  const SALES_PER_PAGE = 20
+  const { customer = undefined, page = 0 } =
+    req.query as unknown as SearchSales
+  const currentPage =
+    Number(page) <= 0 || Number(page) === 1
+      ? 0
+      : Number(page) - 1
+  const skip = currentPage * SALES_PER_PAGE
+  const from = skip === 0 ? 1 : skip + 1
+  const to = skip + SALES_PER_PAGE
+
+  try {
+    const totalSales = await prisma.sales.count({
+      where: {
+        customer: {
+          contains: customer
+        }
+      }
+    })
+    const sales = await prisma.sales.findMany({
+      select: {
+        id: true,
+        customer: true,
+        dni: true,
+        date: true,
+        pdfs: {
+          select: {
+            url: true
+          }
+        }
+      },
+      skip,
+      take: SALES_PER_PAGE,
+      where: {
+        customer: {
+          contains: customer
+        }
+      }
+    })
+
+    res.status(200).json({
+      total: totalSales,
+      from,
+      to,
+      sales: sales as SalePDF[]
+    })
+  } catch (error) {
+    res.status(400).json({ message: 'Error al recuperar las ventas' })
   }
 }
