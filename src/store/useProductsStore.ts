@@ -52,7 +52,6 @@ export const useProductStore = create<ProductsState & Actions>()(
       const setSearchProduct =
         useSearchProductStore.getState().setSearchProduct
       setSearchProduct(searchProduct, areas, status)
-      set(() => ({ page: 1 }))
       const { page } = get()
       set(() => ({ loadingProducts: true }))
       try {
@@ -65,7 +64,7 @@ export const useProductStore = create<ProductsState & Actions>()(
         set(() => ({ products: resp.products }))
         set(() => ({ totalProducts: resp.total }))
         set((state) => ({
-          totalPages: Math.floor(state.totalProducts / state.productPorPage)
+          totalPages: Math.ceil(state.totalProducts / state.productPorPage)
         }))
         set(() => ({ from: resp.from, to: resp.to }))
       } catch (error) {

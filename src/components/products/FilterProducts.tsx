@@ -34,7 +34,7 @@ export const FilterProducts: FC<Props> = ({ areas }) => {
     control,
     name: ['productSearch', 'status', 'areasSelected']
   })
-  const getProducts = useProductStore((state) => state.getProducts)
+  const { getProducts, changePage } = useProductStore((state) => ({ getProducts: state.getProducts, changePage: state.changePage }))
   const debounce = useDebounce()
 
   const areasOptions = useMemo(() => {
@@ -50,6 +50,7 @@ export const FilterProducts: FC<Props> = ({ areas }) => {
       .join('%2C')
     const statusAsString = (status as unknown as SelectOptions)?.value
 
+    changePage(1)
     debounce(() => {
       getProducts(productSearch, areasSelectedAsString, statusAsString)
     }, 700)
