@@ -2,7 +2,7 @@ import type { FC } from 'react'
 
 interface Props {
   text: string
-  textBold: string
+  textBold?: string
 }
 
 export const HeaderPage: FC<Props> = ({ text, textBold }) => {
