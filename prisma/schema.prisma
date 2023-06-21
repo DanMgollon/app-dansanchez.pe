@@ -16,15 +16,15 @@ model areas {
 }
 
 model products {
-  id               Int             @id(map: "PK_productos") @default(autoincrement())
-  name             String          @db.Text
+  id               String          @id(map: "PK_productos") @db.VarChar(20)
+  name             String          @db.VarChar(255)
   price            Decimal         @db.Decimal(18, 2)
   stock            Int
   area_id          Int
   status_id        Int
   products_type_id Int
-  areas            areas           @relation(fields: [area_id], references: [id], onDelete: Cascade, map: "FK_productos_areas")
-  products_types   products_types  @relation(fields: [products_type_id], references: [id], onUpdate: NoAction, map: "FK_products_products_type")
+  areas            areas           @relation(fields: [area_id], references: [id], onUpdate: NoAction, map: "FK_productos_areas")
+  products_types   products_types  @relation(fields: [products_type_id], references: [id], onUpdate: NoAction, map: "FK_products_products_types")
   status           status          @relation(fields: [status_id], references: [id], onUpdate: NoAction, map: "FK_products_status")
   sales_details    sales_details[]
 
@@ -41,16 +41,16 @@ model sales {
   id            Int             @id(map: "PK_ventas") @default(autoincrement())
   date          DateTime?       @default(now(), map: "DF_sales_date") @db.DateTime
   users_id      Int
-  customer      String?         @default("CLIENTE", map: "DF_ventas_cliente") @db.VarChar(200)
-  dni           String?         @default("0", map: "DF_ventas_dni") @db.Char(8)
-  pdfs_url      pdfs_url?
-  users         users           @relation(fields: [users_id], references: [id], onDelete: Cascade, map: "FK_ventas_usuarios")
+  customer      String          @default("CLIENTE", map: "DF_ventas_cliente") @db.VarChar(200)
+  dni           String          @default("0", map: "DF_ventas_dni") @db.Char(8)
+  pdfs          pdfs?
+  users         users           @relation(fields: [users_id], references: [id], onUpdate: NoAction, map: "FK_ventas_usuarios")
   sales_details sales_details[]
 }
 
 model sales_details {
   id          Int      @id(map: "PK_venta_detalles") @default(autoincrement())
-  producto_id Int
+  producto_id String   @db.VarChar(20)
   sales_id    Int
   quantity    Int
   products    products @relation(fields: [producto_id], references: [id], onDelete: Cascade, map: "FK_venta_detalles_productos")
@@ -64,7 +64,7 @@ model security {
 }
 
 model status {
-  id       Int        @id(map: "PK_status") @default(autoincrement())
+  id       Int        @id(map: "PK_status")
   active   Boolean    @default(true, map: "DF_areas_estado_activo")
   areas    areas[]
   products products[]
@@ -89,8 +89,8 @@ model sysdiagrams {
   @@unique([principal_id, name], map: "UK_principal_name")
 }
 
-model pdfs_url {
+model pdfs {
+  sales_id Int    @id(map: "PK_pdfs")
   url      String @db.VarChar(255)
-  sales_id Int    @id(map: "PK_pdfs_url")
-  sales    sales  @relation(fields: [sales_id], references: [id], onUpdate: NoAction, map: "FK_pdfs_url_sales")
+  sales    sales  @relation(fields: [sales_id], references: [id], onUpdate: NoAction, map: "FK_pdfs_sales")
 }
