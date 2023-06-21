@@ -51,3 +51,33 @@ export interface GetSalesRequest {
   customer?: string
   page?: number
 }
+export interface LastSalesReportsDays {
+  date: string
+  total: number
+}
+
+export interface GetLastSalesReportsDaysResponseError {
+  message: string
+}
+
+export interface LastSalesReportsMonths {
+  month: string
+  total: number
+}
+
+export interface GetLastSalesReportsMonthResponseError {
+  message: string
+}
+export interface EarningsReportsByMonths {
+  month: string
+  total: number
+}
+export interface QueryResponseSalesReportsByMonths {
+  monthNumber: number
+  year: number
+  total: number
+}
+
+export interface GetEarningsReportsByMonthsResponseError {
+  message: string
+}

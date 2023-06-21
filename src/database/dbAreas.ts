@@ -1,4 +1,4 @@
-import type { Area } from '@/interfaces'
+import type { Area, QuantityProductsArea } from '@/interfaces'
 import { prisma } from '../../prisma/prismaClient'
 import { type areas } from '@prisma/client'
 
@@ -24,6 +24,32 @@ export const getActiveAreas = async (): Promise<areas[] | null> => {
       }
     })
     return activeAreas
+  } catch (error) {
+    return null
+  }
+}
+
+export const getQuantyProductsArea = async (): Promise<QuantityProductsArea[] | null> => {
+  try {
+    const data = await prisma.$queryRaw`SELECT a.name as area, COUNT(*) as total
+  FROM products p 
+  INNER JOIN areas a 
+  ON p.area_id  = a.id
+  GROUP BY a.name;`
+    return data as QuantityProductsArea[]
+  } catch (error) {
+    return null
+  }
+}
+
+export const getTotalAreas = async (): Promise<any> => {
+  try {
+    const data = await prisma.$queryRaw`SELECT s.active, COUNT(*) as total 
+    FROM areas a 
+    INNER JOIN status s  
+    ON a.status_id  = s.id 
+    GROUP BY s.active`
+    return data
   } catch (error) {
     return null
   }

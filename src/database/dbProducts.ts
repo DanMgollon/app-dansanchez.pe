@@ -1,4 +1,4 @@
-import type { Product, ProductSale, ProductTypes } from '@/interfaces'
+import type { MostSelledProductsI, Product, ProductSale, ProductTypes } from '@/interfaces'
 import { prisma } from '../../prisma/prismaClient'
 
 export const getProductsTypes = async (): Promise<ProductTypes | null> => {
@@ -57,6 +57,21 @@ export const getProductsActive = async (): Promise<ProductSale | null> => {
       JSON.stringify(products)
     ) as ProductSale
     return productsSerilized
+  } catch (error) {
+    return null
+  }
+}
+
+export const getMostSelledProducts = async (): Promise<MostSelledProductsI[] | null> => {
+  try {
+    const data = await prisma.$queryRaw<MostSelledProductsI[]>`SELECT TOP 5 p.name AS name, SUM(sd.quantity) AS total
+    FROM 
+    sales_details sd
+    INNER JOIN products p
+    ON sd.producto_id = p.id
+    GROUP BY sd.sales_id, p.name
+    ORDER BY SUM(sd.quantity) DESC`
+    return (data)
   } catch (error) {
     return null
   }

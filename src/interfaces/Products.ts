@@ -45,3 +45,8 @@ export interface GetProductsRequest {
   areas?: string | undefined
   status?: string | undefined
 }
+
+export interface MostSelledProductsI {
+  name: string
+  total: number
+}

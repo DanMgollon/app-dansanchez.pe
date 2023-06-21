@@ -83,9 +83,9 @@ const MENU_LIST: MenuListType[] = [
     href: '/dashboard/reportes',
     routes: [
       {
-        name: 'Generar Reporte',
+        name: 'Ver Reportes',
         Icon: HiOutlineDocumentReport,
-        path: '/dashboard/reportes/nuevo-reporte'
+        path: '/dashboard/reportes/ver'
       }
     ]
   }
