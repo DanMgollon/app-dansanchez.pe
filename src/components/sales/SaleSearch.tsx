@@ -44,7 +44,7 @@ export const SaleSearch: FC = () => {
               <InputField
                 label="Buscar venta"
                 type="search"
-                placeholder="Nombre del cliente"
+                placeholder="Nombre del cliente o DNI"
                 className="pl-10"
                 autoComplete="off"
                 {...field}

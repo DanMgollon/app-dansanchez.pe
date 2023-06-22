@@ -139,9 +139,18 @@ const getSales = async (
       skip,
       take: SALES_PER_PAGE,
       where: {
-        customer: {
-          contains: customer
-        }
+        OR: [
+          {
+            customer: {
+              contains: customer
+            }
+          },
+          {
+            dni: {
+              contains: customer
+            }
+          }
+        ]
       }
     })
 
