@@ -23,6 +23,7 @@ export interface ProductLean {
   name: string
   price: number
   stock: number
+  expiration_date?: string
 }
 
 export interface ProductsResponse {

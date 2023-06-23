@@ -47,17 +47,13 @@ const getProducts = async (
   const searchProduct = q ?? undefined
   try {
     const pageData =
-      page === '1' || page === undefined
-        ? 0
-        : Number(req.query.page)
+      page === '1' || page === undefined ? 0 : Number(req.query.page)
     const areasAsArrayNumber =
       areas === undefined || areas === ''
         ? undefined
         : areas?.split(',').map((area) => Number(area))
     const statusAsNumber =
-      status === undefined || status === ''
-        ? undefined
-        : Number(status)
+      status === undefined || status === '' ? undefined : Number(status)
 
     const skip = DATA_POR_PAGE * pageData
 
@@ -95,7 +91,8 @@ const getProducts = async (
         stock: true,
         areas: true,
         status: true,
-        products_types: true
+        products_types: true,
+        expiration_date: true
       }
     })
     const from = skip === 0 ? 1 : skip
@@ -118,7 +115,12 @@ const createProduct = async (
   const body = req.body as InferType<typeof schemaCreateProduct>
   try {
     const isValid = schemaCreateProduct.isValidSync(body)
-
+    const expirationDate =
+      body.expiration_date === null ||
+      body.expiration_date === undefined ||
+      body.expiration_date === ''
+        ? null
+        : new Date(body.expiration_date!)
     if (!isValid) {
       res.status(400).json({ message: 'Faltan datos y/o no son válidos' })
       return
@@ -154,7 +156,8 @@ const createProduct = async (
         stock: body.stock,
         area_id: body.areas.id,
         status_id: body.status.active ? 2 : 1,
-        products_type_id: body.products_types.id
+        products_type_id: body.products_types.id,
+        expiration_date: expirationDate
       },
       select: {
         id: true,
@@ -163,12 +166,13 @@ const createProduct = async (
         stock: true,
         areas: true,
         status: true,
-        products_types: true
+        products_types: true,
+        expiration_date: true
       }
     })
-
     res.status(200).json(product as unknown as Product)
   } catch (error) {
+    console.log(error)
     res.status(400).json({ message: 'No se pudo crear el producto' })
   }
 }

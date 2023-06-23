@@ -1,7 +1,8 @@
 import type { Product } from '@/interfaces'
 import Link from 'next/link'
-import type { FC } from 'react'
+import { useMemo, type FC } from 'react'
 import { TableRow, TabelCell } from '@/components/table'
+import { format } from 'date-fns'
 
 interface Props {
   product: Product
@@ -15,12 +16,18 @@ const ProductListItem: FC<Props> = ({ product }) => {
     areas,
     status,
     products_types: productsTypes,
-    price
+    price,
+    expiration_date: expirationDate
   } = product
 
   const { name: areaName } = areas
   const { active } = status
   const { type } = productsTypes
+
+  const dateFormatted = useMemo(() => {
+    if (expirationDate === null) return 'SF'
+    return format(new Date(expirationDate as string), 'dd/MM/yyyy')
+  }, [expirationDate])
 
   return (
     <TableRow>
@@ -43,6 +50,9 @@ const ProductListItem: FC<Props> = ({ product }) => {
         <span className={`${active ? 'text-green-500' : 'text-red-500'}`}>
           {active ? 'ACTIVO' : 'NO ACTIVO'}
         </span>
+      </TabelCell>
+      <TabelCell>
+        <span className="text-gray-600">{ dateFormatted }</span>
       </TabelCell>
       <TabelCell className="text-right">
         <div className="flex gap-4 justify-end">

@@ -29,7 +29,8 @@ export const schemaCreateProduct = yup
     }),
     status: yup.object().shape({
       active: yup.boolean().required('El estado es requerido')
-    })
+    }),
+    expiration_date: yup.string()
   })
   .required()
 
@@ -61,6 +62,7 @@ export const schemaUpdateProduct = yup
     }),
     status: yup.object().shape({
       active: yup.boolean().required('El estado es requerido')
-    })
+    }),
+    expiration_date: yup.string()
   })
   .required()

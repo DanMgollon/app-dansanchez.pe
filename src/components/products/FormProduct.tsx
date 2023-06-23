@@ -7,7 +7,8 @@ import type { ProductTypes, Product, Area } from '@/interfaces'
 import { schemaCreateProduct } from '@/validations'
 import { Controller, useForm } from 'react-hook-form'
 import { useProductStore } from '@/store'
-
+import { addDays, differenceInMilliseconds, formatISO } from 'date-fns'
+import toast from 'react-hot-toast'
 interface Props {
   onSubmit: (data: Product) => void
   product?: Product | undefined
@@ -32,6 +33,26 @@ export const FormProduct: FC<Props> = ({
   })
   const isLoading = useProductStore((state) => state.isLoading)
   const isCreated = useProductStore((state) => state.isCreated)
+  const minExpirationDate = useMemo(() => {
+    const date = new Date()
+    const minDate = formatISO(addDays(date, 1)).split('T')[0]
+    return minDate
+  }, [])
+
+  const handleSubmitForm = (data: Product): void => {
+    const { expiration_date: expirationDate } = data
+    if (
+      expirationDate === undefined ||
+      expirationDate === null ||
+        differenceInMilliseconds(new Date(expirationDate), new Date()) <= 0
+    ) {
+      toast.error('LA FECHA DE VENCIMIENTO DEBE SER MAYOR A LA FECHA ACTUAL', {
+        position: 'top-right'
+      })
+      return
+    }
+    onSubmit(data)
+  }
 
   useEffect(() => {
     if (isCreated) {
@@ -56,14 +77,11 @@ export const FormProduct: FC<Props> = ({
     }
   }, [isCreated])
 
-  const isEdit = useMemo(() => {
-    return product?.id !== undefined
-  }, [product])
-
+  const isEdit = useMemo(() => product?.id !== undefined, [product])
   return (
     <form
       className="bg-white py-5 px-8 border shadow rounded-md"
-      onSubmit={handleSubmit(onSubmit)}
+      onSubmit={handleSubmit(handleSubmitForm)}
     >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
@@ -206,6 +224,20 @@ export const FormProduct: FC<Props> = ({
           {errors.status?.active !== undefined && (
             <ErrorForm message={errors.status.active.message as string} />
           )}
+        </div>
+        <div>
+          <Controller
+            control={control}
+            name='expiration_date'
+            render={({ field }) => (
+              <InputField
+                label='Fecha de Vecimiento'
+                type='date'
+                min={minExpirationDate}
+                {...field}
+              />
+            )}
+          />
         </div>
       </div>
       <ButtonPrimary
