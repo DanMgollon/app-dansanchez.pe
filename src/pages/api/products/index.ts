@@ -43,11 +43,13 @@ const getProducts = async (
 ): Promise<void> => {
   const DATA_POR_PAGE = 20
 
-  const { areas, q, status, page } = req.query as unknown as SearchQuery
+  const { areas, q, status, page = 0 } = req.query as unknown as SearchQuery
   const searchProduct = q ?? undefined
   try {
     const pageData =
-      page === '1' || page === undefined ? 0 : Number(req.query.page)
+    Number(page) <= 0 || Number(page) === 1
+      ? 0
+      : Number(req.query.page) - 1
     const areasAsArrayNumber =
       areas === undefined || areas === ''
         ? undefined
