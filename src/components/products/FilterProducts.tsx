@@ -6,11 +6,12 @@ import { type Area } from '@/interfaces'
 import { Controller, useForm, useWatch } from 'react-hook-form'
 import { useProductStore } from '@/store'
 import { useDebounce } from '@/hooks'
+import { shallow } from 'zustand/shallow'
 
 const OPTIONS_STATUS = [
-  { value: '', label: 'Todos' },
-  { value: '1', label: 'No Activo' },
-  { value: '2', label: 'Activo' }
+  { label: 'Todos', value: '' },
+  { label: 'No Activo', value: '1' },
+  { label: 'Activo', value: '2' }
 ]
 
 interface Props {
@@ -34,7 +35,10 @@ export const FilterProducts: FC<Props> = ({ areas }) => {
     control,
     name: ['productSearch', 'status', 'areasSelected']
   })
-  const { getProducts, changePage } = useProductStore((state) => ({ getProducts: state.getProducts, changePage: state.changePage }))
+  const { getProducts, changePage } = useProductStore((state) => ({
+    getProducts: state.getProducts,
+    changePage: state.changePage
+  }), shallow)
   const debounce = useDebounce()
 
   const areasOptions = useMemo(() => {
