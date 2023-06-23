@@ -49,11 +49,11 @@ export const useProductStore = create<ProductsState & Actions>()(
     isUpdated: false,
     isLoading: false,
     getProducts: async (searchProduct, areas, status) => {
+      set(() => ({ loadingProducts: true }))
       const setSearchProduct =
         useSearchProductStore.getState().setSearchProduct
       setSearchProduct(searchProduct, areas, status)
-      const { page } = get()
-      set(() => ({ loadingProducts: true }))
+      const { page, totalProducts, productPorPage } = get()
       try {
         const resp = await getProductsService({
           page,
@@ -64,8 +64,9 @@ export const useProductStore = create<ProductsState & Actions>()(
         set(() => ({ products: resp.products }))
         set(() => ({ totalProducts: resp.total }))
         set((state) => ({
-          totalPages: Math.ceil(state.totalProducts / state.productPorPage)
+          totalPages: Math.round(state.totalProducts / state.productPorPage)
         }))
+        console.log(totalProducts / productPorPage)
         set(() => ({ from: resp.from, to: resp.to }))
       } catch (error) {
         const message = (error as Error).message

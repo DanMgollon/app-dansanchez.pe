@@ -2,7 +2,7 @@ import type { Product } from '@/interfaces'
 import Link from 'next/link'
 import { useMemo, type FC } from 'react'
 import { TableRow, TabelCell } from '@/components/table'
-import { format } from 'date-fns'
+import { formatDateISOTOString } from '../../utils/formatDateISOTOString'
 
 interface Props {
   product: Product
@@ -26,7 +26,7 @@ const ProductListItem: FC<Props> = ({ product }) => {
 
   const dateFormatted = useMemo(() => {
     if (expirationDate === null) return 'SF'
-    return format(new Date(expirationDate as string), 'dd/MM/yyyy')
+    return formatDateISOTOString(expirationDate as string)
   }, [expirationDate])
 
   return (

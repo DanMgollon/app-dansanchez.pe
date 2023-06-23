@@ -229,12 +229,13 @@ export const FormProduct: FC<Props> = ({
           <Controller
             control={control}
             name='expiration_date'
-            render={({ field }) => (
+            render={({ field: { value, ...rest } }) => (
               <InputField
                 label='Fecha de Vecimiento'
                 type='date'
                 min={minExpirationDate}
-                {...field}
+                {...rest}
+                defaultValue={new Date(value as string).toISOString().split('T')[0] ?? ''}
               />
             )}
           />

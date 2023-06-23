@@ -20,6 +20,14 @@ export default async function handler (req: NextApiRequest, res: NextApiResponse
 
 const editProduct = async (req: NextApiRequest, res: NextApiResponse<Data>): Promise<void> => {
   const body = req.body as InferType<typeof schemaUpdateProduct>
+  const expirationDate =
+  body.expiration_date === null ||
+  body.expiration_date === undefined ||
+  body.expiration_date === ''
+    ? null
+    : new Date(body.expiration_date!)
+
+  console.log(expirationDate)
 
   const isValid = schemaUpdateProduct.isValidSync(body)
   if (!isValid) {
@@ -44,7 +52,8 @@ const editProduct = async (req: NextApiRequest, res: NextApiResponse<Data>): Pro
         stock: body.stock,
         area_id: body.areas.id,
         status_id: body.status.active ? 2 : 1,
-        products_type_id: Number(body.products_types.id)
+        products_type_id: Number(body.products_types.id),
+        expiration_date: expirationDate
       },
       select: {
         id: true,
