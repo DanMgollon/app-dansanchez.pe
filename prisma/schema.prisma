@@ -23,12 +23,11 @@ model products {
   area_id          Int
   status_id        Int
   products_type_id Int
+  expiration_date  DateTime?       @db.Date
   areas            areas           @relation(fields: [area_id], references: [id], onUpdate: NoAction, map: "FK_productos_areas")
   products_types   products_types  @relation(fields: [products_type_id], references: [id], onUpdate: NoAction, map: "FK_products_products_types")
   status           status          @relation(fields: [status_id], references: [id], onUpdate: NoAction, map: "FK_products_status")
   sales_details    sales_details[]
-
-  @@index([id], map: "IX_products")
 }
 
 model products_types {
@@ -77,16 +76,6 @@ model users {
   password String    @db.VarChar(255)
   sales    sales[]
   security security?
-}
-
-model sysdiagrams {
-  name         String @db.NVarChar(128)
-  principal_id Int
-  diagram_id   Int    @id(map: "PK__sysdiagr__C2B05B61CC17E652") @default(autoincrement())
-  version      Int?
-  definition   Bytes?
-
-  @@unique([principal_id, name], map: "UK_principal_name")
 }
 
 model pdfs {
