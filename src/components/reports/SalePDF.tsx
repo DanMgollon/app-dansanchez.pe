@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
   textNormal: {
     fontSize: 14
   },
-  saleDetailsIVG: {
+  saleDetailsIGV: {
     display: 'flex',
     flexDirection: 'row',
     gap: 10,
@@ -205,13 +205,13 @@ export const SalePDF = ({
                 </View>
               ))}
             </View>
-            <View style={styles.saleDetailsIVG}>
+            <View style={styles.saleDetailsIGV}>
               <Text
                 style={{
                   flexBasis: '20%'
                 }}
               >
-                IVG:
+                IGV:
               </Text>
               <Text
                 style={{
