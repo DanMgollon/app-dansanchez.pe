@@ -29,6 +29,21 @@ export const getActiveAreas = async (): Promise<areas[] | null> => {
   }
 }
 
+export const getAreas = async (): Promise<Area[] | null> => {
+  try {
+    const areas = await prisma.areas.findMany({
+      select: {
+        id: true,
+        name: true,
+        status: true
+      }
+    })
+    return areas
+  } catch (error) {
+    return null
+  }
+}
+
 export const getQuantyProductsArea = async (): Promise<QuantityProductsArea[] | null> => {
   try {
     const data = await prisma.$queryRaw`SELECT a.name as area, COUNT(*) as total

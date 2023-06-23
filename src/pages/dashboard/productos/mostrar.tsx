@@ -4,10 +4,10 @@ import { useProductStore } from '@/store'
 import { ProductsList } from '@/components/products/ProductsList'
 import { ProductsPagination } from '@/components/products'
 import { FilterProducts } from '@/components/products/FilterProducts'
-import { prisma } from '../../../../prisma/prismaClient'
 import type { Area } from '@/interfaces'
 import { type GetServerSideProps } from 'next'
 import { HeaderPage } from '@/ui'
+import { getAreas } from '@/database/dbAreas'
 
 interface Props {
   areas: Area[]
@@ -36,13 +36,7 @@ const ProductsPage: FC<Props> = ({ areas }) => {
 export default ProductsPage
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const areas = await prisma.areas.findMany({
-    select: {
-      id: true,
-      name: true,
-      status: true
-    }
-  })
+  const areas = await getAreas()
   return {
     props: {
       areas
