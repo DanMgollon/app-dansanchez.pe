@@ -235,7 +235,7 @@ export const FormProduct: FC<Props> = ({
                 type='date'
                 min={minExpirationDate}
                 {...rest}
-                defaultValue={new Date(value as string).toISOString().split('T')[0] ?? ''}
+                // defaultValue={new Date(value as string).toISOString().split('T')[0] ?? ''}
               />
             )}
           />
