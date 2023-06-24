@@ -5,6 +5,7 @@ import { getTotalAreas, getQuantyProductsArea } from '@/database/dbAreas'
 import type { GetServerSideProps } from 'next'
 import type {
   MostSelledProductsI,
+  ProductsToExpirate,
   QuantityProductsArea,
   TotalAreaReports
 } from '@/interfaces'
@@ -16,18 +17,21 @@ import {
 } from '@/components/reports'
 import { LastSalesByMonths } from '@/components/products/LastSalesByMonths'
 import { EarningsByMonths } from '@/components/reports/EarningsByMonths'
-import { getMostSelledProducts } from '@/database/dbProducts'
+import { getMostSelledProducts, getProductsToExpirate } from '@/database/dbProducts'
+import { ExpiringProducts } from '@/components/reports/ExpiringProducts'
 
 interface Props {
   totalAreasReports: TotalAreaReports[]
   productsPerArea: QuantityProductsArea[]
   mostSelledProducts: MostSelledProductsI[]
+  productsToExpirate: ProductsToExpirate[]
 }
 
 const WatchReportsPage: FC<Props> = ({
   totalAreasReports,
   productsPerArea,
-  mostSelledProducts
+  mostSelledProducts,
+  productsToExpirate
 }) => {
   return (
     <DashboardLayout>
@@ -55,6 +59,9 @@ const WatchReportsPage: FC<Props> = ({
         <div className="mb-8">
           <MostSelledProducts products={mostSelledProducts} />
         </div>
+        <div className="mb-8">
+          <ExpiringProducts productsToExpirate={productsToExpirate}/>
+        </div>
       </section>
     </DashboardLayout>
   )
@@ -66,12 +73,15 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const totalAreasReports = await getTotalAreas()
   const productsPerArea = await getQuantyProductsArea()
   const mostSelledProducts = await getMostSelledProducts()
+  const productsToExpirate = await getProductsToExpirate()
+  console.log(productsToExpirate)
 
   return {
     props: {
       totalAreasReports,
       productsPerArea,
-      mostSelledProducts
+      mostSelledProducts,
+      productsToExpirate
     }
   }
 }

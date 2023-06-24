@@ -1,4 +1,5 @@
 export { default as bcrypt } from './bcrypt'
 export * from './formatterMoney'
 export * from './cloudinary'
-export * from './formatDateISOTOString'
+export * from './formatDateISOToString'
+export * from './formantDate'

@@ -51,3 +51,10 @@ export interface MostSelledProductsI {
   name: string
   total: number
 }
+
+export interface ProductsToExpirate {
+  id: string
+  name: string
+  days: number
+  expiration_date: string
+}

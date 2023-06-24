@@ -106,7 +106,7 @@ const getSales = async (
   res: NextApiResponse<Data>
 ): Promise<void> => {
   const SALES_PER_PAGE = 20
-  const { customer = undefined, page = 0 } =
+  const { customer = '', page = 0 } =
     req.query as unknown as SearchSales
   const currentPage =
     Number(page) <= 0 || Number(page) === 1
