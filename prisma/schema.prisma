@@ -52,14 +52,14 @@ model sales_details {
   producto_id String   @db.VarChar(20)
   sales_id    Int
   quantity    Int
-  products    products @relation(fields: [producto_id], references: [id], onDelete: Cascade, map: "FK_venta_detalles_productos")
+  products    products @relation(fields: [producto_id], references: [id], map: "FK_venta_detalles_productos")
   sales       sales    @relation(fields: [sales_id], references: [id], onDelete: Cascade, map: "FK_venta_detalles_ventas")
 }
 
 model security {
-  token   Bytes? @db.VarBinary(255)
-  user_id Int    @id(map: "PK_security_1")
-  users   users  @relation(fields: [user_id], references: [id], onDelete: Cascade, map: "FK_security_users")
+  token   String? @db.VarChar(255)
+  user_id Int     @id(map: "PK_security_1")
+  users   users   @relation(fields: [user_id], references: [id], onDelete: Cascade, map: "FK_security_users")
 }
 
 model status {
