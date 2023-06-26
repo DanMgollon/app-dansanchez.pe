@@ -43,7 +43,7 @@ export const FormLogin: FC = () => {
     if (error !== undefined) {
       setShowError(true)
       setCheckUser(false)
-      setErrorMessage('Correo o contraseña incorrectos')
+      setErrorMessage('Uusario o contraseña incorrectos')
     }
   }, [router.query])
 

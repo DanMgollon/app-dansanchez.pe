@@ -1,10 +1,44 @@
 import { type GetServerSideProps } from 'next'
 import { FormLogin } from '@/components/form'
 import Head from 'next/head'
-import type { FC } from 'react'
+import { useEffect, type FC, useState } from 'react'
 import { getSession } from 'next-auth/react'
+import { useResetPasswsord } from '@/store/useResetPassword'
+import { toast } from 'react-hot-toast'
 
 const Login: FC = () => {
+  const [toastId, setToastId] = useState<string>()
+  const sendEmailForResetPassword = useResetPasswsord(state => state.sendEmailForResetPassword)
+  const sendEmailsucessMessage = useResetPasswsord(state => state.sendEmailsucessMessage)
+  const sendEmailerrorMessage = useResetPasswsord(state => state.sendEmailerrorMessage)
+  const isLoading = useResetPasswsord(state => state.isLoading)
+
+  const handdleResetPassword = (): void => {
+    sendEmailForResetPassword()
+  }
+
+  useEffect(() => {
+    if (sendEmailsucessMessage !== null) {
+      toast.success(sendEmailsucessMessage)
+    }
+  }, [sendEmailsucessMessage])
+
+  useEffect(() => {
+    if (sendEmailerrorMessage !== null) {
+      toast.error(sendEmailerrorMessage)
+    }
+  }, [sendEmailerrorMessage])
+
+  useEffect(() => {
+    if (!isLoading) {
+      toast.dismiss(toastId)
+    }
+    if (isLoading) {
+      const toastId = toast.loading('Enviando correo...')
+      setToastId(toastId)
+    }
+  }, [isLoading])
+
   return (
     <>
       <Head>
@@ -18,7 +52,7 @@ const Login: FC = () => {
             className="h-full object-cover brightness-[.55]"
           />
           <h2 className="text-white font-extrabold text-3xl mb-14 text-center absolute left-5 top-5">
-            Ferretería{' '}
+            Ferreteria{' '}
             <p className="text-inherit inline-block">
               J<span className="text-base">&</span>R
             </p>
@@ -29,7 +63,19 @@ const Login: FC = () => {
             <h3 className="text-5xl font-extrabold text-center mb-8">
               Iniciar Sesión
             </h3>
-            <FormLogin />
+            <div className='mb-5'>
+             <FormLogin />
+            </div>
+            <footer className='flex justify-end'>
+              <div>
+                <p className="text-center text-sm text-zinc-500">
+                  ¿Has olvidado la contraseña?{' '}
+                  <button className="text-blue-800 hover:underline" onClick={handdleResetPassword}>
+                    Restablecer contraseña
+                  </button>
+                </p>
+              </div>
+            </footer>
           </div>
         </div>
       </section>
