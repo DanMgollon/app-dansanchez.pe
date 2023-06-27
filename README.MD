@@ -9,6 +9,8 @@
 - [TAILWIND CSS](https://tailwindcss.com/)
 - [PRISMA](https://www.prisma.io/)
 - [REACT HOOK FORM](https://react-hook-form.com/)
+- [REACT PAGINATE](https://www.npmjs.com/package/react-paginate)
+- [REACT CHART 2](https://react-chartjs-2.js.org/)
 - [REACT SELECT](https://react-select.com/home)
 - [REACT-PDF](https://react-pdf.org/)
 
@@ -40,6 +42,10 @@ NEXTAUTH_SECRET=
 CLOUDINARY_CLOUD_NAME=
 CLOUDINARY_API_KEY=
 CLOUDINARY_API_SECRET=
+APIS_TOKEN=
+NODEMAILER_USER=
+NODEMAILER_PASS=
+APP_BASE_URL=
 ```
 - ### DATABASE_URL
 La cadena de conexion a la base de datos, esta debe ser una cadena de conexion valida para SQL SERVER.   
@@ -71,4 +77,20 @@ CLOUDINARY_API_KEY=api_key
 La clave secreta de la API de Cloudinary que se usara para almacenar los archivos.
 ```
 CLOUDINARY_API_SECRET=api_secret
+```
+- ## APIS_TOKEN
+El token que se usara para consumir las apis de **Apis Net** para obtener los datos de la persona a traves del numero de DNI.
+```
+APIS_TOKEN=YOUR_TOKEN
+```
+
+- ## NODEMAILER_USER
+El correo que se usara para enviar los correos.
+```
+  NODEMAILER_USER=example@dominio.com
+```
+- ## NODEMAILER_PASS
+La contraseña del correo que se usara para enviar los correos.
+```
+  NODEMAILER_PASS=YOUR_PASSWORD
 ```
