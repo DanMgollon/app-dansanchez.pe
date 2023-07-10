@@ -12,7 +12,7 @@ interface Props {
 
 export const CardHome: FC<Props> = ({ title, value, link, bgClassName, darkBgClassName }) => {
   return (
-    <article className={`${bgClassName ?? ''} rounded-md h-44 relative overflow-hidden`}>
+    <article className={`${bgClassName ?? ''} rounded-md h-40 relative overflow-hidden`}>
       <div className="w-full h-full flex flex-col">
         <div className="grow py-3 px-6">
           <h3 className="text-white text-4xl font-extrabold mb-2">{value}</h3>
