@@ -81,3 +81,10 @@ export interface QueryResponseSalesReportsByMonths {
 export interface GetEarningsReportsByMonthsResponseError {
   message: string
 }
+
+export interface LastSales {
+  customer: string
+  date: string
+  total: number
+  url_pdf: string
+}

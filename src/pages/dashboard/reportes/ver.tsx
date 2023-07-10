@@ -74,8 +74,6 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const productsPerArea = await getQuantyProductsArea()
   const mostSelledProducts = await getMostSelledProducts()
   const productsToExpirate = await getProductsToExpirate()
-  console.log(productsToExpirate)
-
   return {
     props: {
       totalAreasReports,

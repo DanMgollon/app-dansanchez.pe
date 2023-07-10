@@ -107,6 +107,7 @@ const getProducts = async (
       products: products as unknown as Product[]
     })
   } catch (error) {
+    console.log(error)
     res.status(400).json({ message: 'No se pudo obtener los productos' })
   }
 }

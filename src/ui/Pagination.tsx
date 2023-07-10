@@ -13,7 +13,7 @@ export const Pagination: FC<Props> = ({ pageCount, forcePage, onPageChange }) =>
       pageCount={pageCount}
       previousLabel="<"
       nextLabel=">"
-      pageLinkClassName="w-ful h-full"
+      pageLinkClassName="w-full h-full"
       previousClassName="bg-blue-700 rounded border border-gray-300 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 cursor-pointer"
       nextClassName="bg-blue-700 rounded border border-gray-300 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 cursor-pointer"
       containerClassName="flex gap-2 items-center"
