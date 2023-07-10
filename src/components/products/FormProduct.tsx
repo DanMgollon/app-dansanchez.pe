@@ -94,6 +94,7 @@ export const FormProduct: FC<Props> = ({
                 type="text"
                 placeholder="Ej: AEX71"
                 disabled={isEdit}
+                autoComplete='off'
                 {...field}
               />
             )}
