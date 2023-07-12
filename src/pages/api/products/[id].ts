@@ -52,7 +52,7 @@ const editProduct = async (req: NextApiRequest, res: NextApiResponse<Data>): Pro
         stock: body.stock,
         area_id: body.areas.id,
         status_id: body.status.active ? 2 : 1,
-        products_type_id: Number(body.products_types.id),
+        products_type_id: Number(body.products_types.id)
         // expiration_date: expirationDate
       },
       select: {
