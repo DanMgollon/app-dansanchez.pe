@@ -33,11 +33,11 @@ export const FormProduct: FC<Props> = ({
   })
   const isLoading = useProductStore((state) => state.isLoading)
   const isCreated = useProductStore((state) => state.isCreated)
-  const minExpirationDate = useMemo(() => {
-    const date = new Date()
-    const minDate = formatISO(addDays(date, 1)).split('T')[0]
-    return minDate
-  }, [])
+  // const minExpirationDate = useMemo(() => {
+  //   const date = new Date()
+  //   const minDate = formatISO(addDays(date, 1)).split('T')[0]
+  //   return minDate
+  // }, [])
 
   const handleSubmitForm = (data: Product): void => {
     const { expiration_date: expirationDate } = data
@@ -226,7 +226,7 @@ export const FormProduct: FC<Props> = ({
             <ErrorForm message={errors.status.active.message as string} />
           )}
         </div>
-        <div>
+        {/* <div>
           <Controller
             control={control}
             name='expiration_date'
@@ -240,7 +240,7 @@ export const FormProduct: FC<Props> = ({
               />
             )}
           />
-        </div>
+        </div> */}
       </div>
       <ButtonPrimary
         className="mt-5 flex justify-center items-center gap-2 w-full"

@@ -59,9 +59,9 @@ const WatchReportsPage: FC<Props> = ({
         <div className="mb-8">
           <MostSelledProducts products={mostSelledProducts} />
         </div>
-        <div className="mb-8">
+        {/* <div className="mb-8">
           <ExpiringProducts productsToExpirate={productsToExpirate}/>
-        </div>
+        </div> */}
       </section>
     </DashboardLayout>
   )

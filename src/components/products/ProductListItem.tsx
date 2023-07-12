@@ -51,9 +51,9 @@ const ProductListItem: FC<Props> = ({ product }) => {
           {active ? 'ACTIVO' : 'NO ACTIVO'}
         </span>
       </TabelCell>
-      <TabelCell>
+      {/* <TabelCell>
         <span className="text-gray-600">{ dateFormatted }</span>
-      </TabelCell>
+      </TabelCell> */}
       <TabelCell className="text-right">
         <div className="flex gap-4 justify-end">
           <Link

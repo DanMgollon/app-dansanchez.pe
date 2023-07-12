@@ -10,7 +10,7 @@ const HEAD_ROWS = [
   'Area',
   'Tipo',
   'Estado',
-  'F. VENCIMIENTO',
+  // 'F. VENCIMIENTO',
   'Acciones'
 ]
 interface Props {
