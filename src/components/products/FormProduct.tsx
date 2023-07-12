@@ -40,17 +40,6 @@ export const FormProduct: FC<Props> = ({
   // }, [])
 
   const handleSubmitForm = (data: Product): void => {
-    const { expiration_date: expirationDate } = data
-    if (
-      expirationDate === undefined ||
-      expirationDate === null ||
-        differenceInMilliseconds(new Date(expirationDate), new Date()) <= 0
-    ) {
-      toast.error('LA FECHA DE VENCIMIENTO DEBE SER MAYOR A LA FECHA ACTUAL', {
-        position: 'top-right'
-      })
-      return
-    }
     onSubmit(data)
   }
 
