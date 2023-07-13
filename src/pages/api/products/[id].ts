@@ -27,8 +27,6 @@ const editProduct = async (req: NextApiRequest, res: NextApiResponse<Data>): Pro
     ? null
     : new Date(body.expiration_date!)
 
-  console.log(expirationDate)
-
   const isValid = schemaUpdateProduct.isValidSync(body)
   if (!isValid) {
     res.status(400).json({ message: 'Faltan datos y/o datos no válidos en la petición' })

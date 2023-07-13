@@ -1,8 +1,11 @@
 import type { Status } from '.'
 
-export interface Area {
+export interface AreaLean {
   id: number
   name: string
+}
+
+export interface Area extends AreaLean {
   status: Status
 }
 

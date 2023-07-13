@@ -12,6 +12,7 @@ interface Props {
 }
 
 const EditAreaPagae: FC<Props> = ({ area }) => {
+  console.log(area)
   const updateArea = useAreasStore(state => state.updateArea)
   const isUpdated = useAreasStore(state => state.isUpdated)
   const onSubmit = (data: Area): void => {

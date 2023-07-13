@@ -1,28 +1,35 @@
-import type { Area, QuantityProductsArea } from '@/interfaces'
+import type { Area, AreaLean, QuantityProductsArea } from '@/interfaces'
 import { prisma } from '../../prisma/prismaClient'
-import { type areas } from '@prisma/client'
 
 export const findAreaByName = async (name: string): Promise<Area | null> => {
   try {
-    const area = await prisma.areas.findFirst({
-      where: { name },
-      include: { status: true }
-    })
+    const [firstRow] = await prisma.$queryRaw<
+    Array<{
+      id: number
+      name: string
+      id_status: number
+      active: boolean
+    }>
+    >`EXEC sp_obtener_producto_por_nombre ${name}`
+    const area: Area = {
+      id: firstRow.id,
+      name: firstRow.name,
+      status: {
+        id: firstRow.id_status,
+        active: firstRow.active
+      }
+    }
     return area
   } catch (error) {
     return null
   }
 }
 
-export const getActiveAreas = async (): Promise<areas[] | null> => {
+export const getActiveAreas = async (): Promise<AreaLean[] | null> => {
   try {
-    const activeAreas = await prisma.areas.findMany({
-      where: {
-        status: {
-          active: true
-        }
-      }
-    })
+    const activeAreas = await prisma.$queryRaw<
+    AreaLean[]
+    >`EXEC sp_obtener_areas_activas`
     return activeAreas
   } catch (error) {
     return null
@@ -44,13 +51,11 @@ export const getAreas = async (): Promise<Area[] | null> => {
   }
 }
 
-export const getQuantyProductsArea = async (): Promise<QuantityProductsArea[] | null> => {
+export const getQuantyProductsArea = async (): Promise<
+QuantityProductsArea[] | null
+> => {
   try {
-    const data = await prisma.$queryRaw`SELECT a.name as area, COUNT(*) as total
-  FROM products p 
-  INNER JOIN areas a 
-  ON p.area_id  = a.id
-  GROUP BY a.name;`
+    const data = await prisma.$queryRaw`EXEC sp_obtener_producto_por_area`
     return data as QuantityProductsArea[]
   } catch (error) {
     return null
@@ -59,11 +64,7 @@ export const getQuantyProductsArea = async (): Promise<QuantityProductsArea[] | 
 
 export const getTotalAreas = async (): Promise<any> => {
   try {
-    const data = await prisma.$queryRaw`SELECT s.active, COUNT(*) as total 
-    FROM areas a 
-    INNER JOIN status s  
-    ON a.status_id  = s.id 
-    GROUP BY s.active`
+    const data = await prisma.$queryRaw`EXEC sp_obtener_total_areas_activas`
     return data
   } catch (error) {
     return null
